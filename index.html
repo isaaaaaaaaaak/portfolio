@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Isaak - Home</title>
+    <style>
+        @font-face {
+            font-family: 'DrunkFonts';
+            src: url('DRUNKFONTS-Regular.otf') format('opentype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        /* CONFIGURAZIONE VARIABILI DI TEMA E GLITCH */
+        body {
+            --bg-main: radial-gradient(circle at center, #f5e6f5 0%, #e2c1e2 60%, #c99ec9 100%);
+            --color-text: #121212;
+            --color-glow: #121212;
+
+            --glitch-bg-start: #e2c1e2;
+            --glitch-flash-1: #c99ec9;
+            --glitch-flash-2: #121212;
+            --glitch-shadow-1: #dda0dd;
+            --glitch-shadow-2: #121212;
+            --glitch-filter-1: brightness(1.1) contrast(1.1);
+            --glitch-filter-2: brightness(0.9) contrast(1.2);
+            --scanline-color: rgba(18, 18, 18, 0.07);
+
+            background: var(--bg-main);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            text-align: center;
+            transition: background 0.5s ease;
+            position: relative;
+            overflow: hidden;
+            cursor: none !important;
+        }
+
+        body.dark-mode {
+            --bg-main: radial-gradient(circle at center, #000000 0%, #0d0d0d 60%, #161616 100%);
+            --color-text: #DDA0DD;
+            --color-glow: #DDA0DD;
+            
+            --glitch-bg-start: #161616;
+            --glitch-flash-1: #0d0d0d;
+            --glitch-flash-2: #242424;
+            --glitch-shadow-1: #DDA0DD;
+            --glitch-shadow-2: #4a3152;
+            --glitch-filter-1: brightness(0.9) contrast(1.1);
+            --glitch-filter-2: brightness(0.7) contrast(1.3);
+            --scanline-color: rgba(221, 160, 221, 0.09);
+        }
+
+        /* CANVAS DELLA NEVE TV */
+        #tvNoiseCanvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 2; 
+            pointer-events: none;
+            mix-blend-mode: hard-light; 
+            opacity: 0.28; 
+            transition: opacity 0.3s ease;
+            will-change: transform, opacity;
+        }
+
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.04) 50%);
+            background-size: 100% 4px;
+            z-index: 3;
+            pointer-events: none;
+        }
+
+        /* LOGO IN SECONDO PIANO */
+        .logo-sfondo-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 4; 
+            pointer-events: none;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            clip-path: url(#bubblyClip);
+            -webkit-clip-path: url(#bubblyClip);
+            filter: url(#liquid-goo) drop-shadow(0 0 6px var(--color-glow));
+            will-change: transform;
+        }
+
+        .logo-personalizzato-bg {
+            width: 140vw;  
+            height: 140vh;
+            object-fit: contain;
+            opacity: 0.18; 
+            transform: rotate(-90deg); 
+            transition: opacity 0.5s ease;
+        }
+
+        /* CONTENUTI DELL'INTERFACCIA */
+        .titolo-container {
+            position: relative;
+            z-index: 10; 
+            padding: 55px 85px;
+            transition: transform 0.1s linear; 
+            will-change: transform;
+        }
+
+        .theme-progress-container, .social-footer, .site-bar {
+            position: relative;
+            z-index: 10;
+        }
+
+        a, button, .titolo-principale-link, .social-link {
+            cursor: none !important;
+        }
+
+        /* CURSORE PERSONALIZZATO VINILE */
+        .vinyl-cursor {
+            position: fixed;
+            width: 32px;
+            height: 32px;
+            pointer-events: none;
+            z-index: 9999;
+            transform: translate(-50%, -50%) scale(1);
+            will-change: left, top;
+            transition: transform 0.2s cubic-bezier(0.25, 1, 0.5, 1);
+            left: -100px;
+            top: -100px;
+        }
+
+        .vinyl-cursor::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle, #3a3a3a 3px, #121212 4px, #2a2a2a 7px, #121212 9px, #3a3a3a 11px, #121212 12px);
+            border-radius: 50%;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            transition: opacity 0.2s ease, background 0.5s ease;
+            opacity: 1;
+        }
+
+        body.dark-mode .vinyl-cursor::before {
+            background: radial-gradient(circle, #1a1a1a 3px, #DDA0DD 4px, #2a2a2a 7px, #DDA0DD 9px, #111111 11px, #DDA0DD 12px);
+            box-shadow: 0 4px 12px rgba(221, 160, 221, 0.25);
+        }
+
+        .vinyl-cursor::after {
+            content: '';
+            position: absolute;
+            top: -2px; left: -2px; width: 24px; height: 24px;
+            background-size: contain;
+            background-repeat: no-repeat;
+            opacity: 0;
+            transform: scale(0.8) translate(5px, 5px);
+            transition: opacity 0.2s ease, transform 0.2s ease;
+        }
+
+        body {
+            --cursor-svg: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'><path d='M4.5 3v15.2l3.9-3.9 2.7 6.3 2.7-1.2-2.7-6.3 5.4-.1z' fill='%23121212'/></svg>");
+        }
+
+        body.dark-mode {
+            --cursor-svg: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'><path d='M4.5 3v15.2l3.9-3.9 2.7 6.3 2.7-1.2-2.7-6.3 5.4-.1z' fill='%23DDA0DD'/></svg>");
+        }
+
+        .vinyl-cursor::after { background-image: var(--cursor-svg); }
+        .vinyl-cursor.on-progress::before { opacity: 0; }
+        .vinyl-cursor.on-progress::after { opacity: 1; transform: scale(1.1) translate(0, 0); }
+        .vinyl-cursor.spin::before { animation: spinVinyl 0.5s cubic-bezier(0.25, 1, 0.5, 1) forwards; }
+
+        @keyframes spinVinyl {
+            0% { transform: scale(1.2) rotate(0deg); }
+            100% { transform: scale(1) rotate(360deg); }
+        }
+
+        .titolo-principale-link {
+            font-family: 'DrunkFonts', sans-serif;
+            font-size: 7rem;
+            letter-spacing: 6px;
+            color: var(--color-text);
+            text-decoration: none;
+            text-transform: lowercase;
+            outline: none;
+            display: block;
+            position: relative;
+            opacity: 0.9;
+            -webkit-box-reflect: below -25px linear-gradient(transparent 30%, rgba(255, 255, 255, 0) 40%, rgba(255, 255, 255, 0.25) 100%);
+            transition: color 0.5s ease, opacity 0.3s ease;
+        }
+
+        .titolo-principale-link:hover { opacity: 1; }
+
+        /* GLITCH */
+        .global-glitch-active {
+            animation: textDistort 0.35s linear infinite;
+        }
+
+        @keyframes textDistort {
+            0%, 100% { transform: translate(0, 0) skewX(0deg); filter: none; }
+            20% { transform: translate(-8px, 3px) skewX(-8deg); clip-path: inset(10% 0 85% 0); }
+            40% { transform: translate(10px, -2px) skewX(12deg); clip-path: inset(40% 0 35% 0); }
+            60% { transform: translate(-4px, 5px) skewX(-3deg); clip-path: inset(70% 0 10% 0); }
+            80% { transform: translate(6px, -4px) skewX(6deg); clip-path: inset(0% 0 60% 0); }
+        }
+
+        .squircle-svg {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+        }
+
+        .squircle-glow {
+            fill: none;
+            stroke: var(--color-glow);
+            stroke-width: 3.5;
+            stroke-linecap: round;
+            stroke-dasharray: 220 1200; 
+            stroke-dashoffset: 0; 
+            opacity: 0;
+            animation: scaricaLuce 10s cubic-bezier(0.25, 1, 0.5, 1) infinite;
+            transition: stroke 0.5s ease;
+        }
+
+        .titolo-container:hover .squircle-glow {
+            animation: none;
+            opacity: 0 !important;
+        }
+
+        @keyframes scaricaLuce {
+            0%, 95% { stroke-dashoffset: 0; opacity: 0; }
+            95.1% { stroke-dashoffset: 0; opacity: 0.4; }
+            100% { stroke-dashoffset: -1200; opacity: 0.4; }
+        }
+
+        /* PROGRESS BAR */
+        .theme-progress-container {
+            position: absolute;
+            top: 35px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            background: transparent;
+            border: none;
+            outline: none;
+            padding: 0;
+            opacity: 0.7;
+            transition: opacity 0.3s ease;
+        }
+
+        .theme-progress-container:hover { opacity: 1; }
+
+        .progress-bar {
+            width: 60px;
+            height: 12px;
+            border: 2px solid var(--color-text);
+            padding: 2px;
+            display: flex;
+            gap: 2px;
+            box-sizing: border-box;
+            transition: border-color 0.5s ease;
+        }
+
+        .progress-chunk {
+            flex: 1;
+            height: 100%;
+            background-color: transparent; 
+            border: 1px solid transparent; 
+            transition: background-color 0.3s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.3s ease;
+        }
+
+        /* I quadratini si riempiono solo in DARK-MODE, restando vuoti in LIGHT-MODE */
+        body.dark-mode #chunk-1 { background-color: var(--color-text); opacity: 0.2; }
+        body.dark-mode #chunk-2 { background-color: var(--color-text); opacity: 0.4; }
+        body.dark-mode #chunk-3 { background-color: var(--color-text); opacity: 0.6; }
+        body.dark-mode #chunk-4 { background-color: var(--color-text); opacity: 0.8; }
+        body.dark-mode #chunk-5 { background-color: var(--color-text); opacity: 1.0; }
+
+        .theme-label {
+            font-family: monospace;
+            font-size: 0.75rem;
+            letter-spacing: 1.5px;
+            color: var(--color-text);
+            text-transform: lowercase;
+            transition: color 0.5s ease;
+        }
+
+        /* SOCIAL FOOTER SPOSTATO IN ALTO */
+        .social-footer {
+            position: absolute;
+            bottom: 90px;
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            transition: bottom 0.3s ease;
+        }
+
+        .social-link {
+            display: inline-block;
+            text-decoration: none;
+            transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        .social-icon {
+            width: 32px;
+            height: 32px;
+            fill: var(--color-text);
+            transition: fill 0.5s ease, opacity 0.3s ease;
+            opacity: 0.7;
+        }
+
+        .social-link:hover { transform: scale(1.12); }
+        .social-link:hover .social-icon { opacity: 1; }
+
+        /* BARRA DI PROTEZIONE IN BASSO */
+        .site-bar {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 15px 20px;
+            box-sizing: border-box;
+            font-family: monospace;
+            font-size: 0.72rem;
+            letter-spacing: 1px;
+            text-align: center;
+            color: var(--color-text);
+            opacity: 0.35;
+            transition: opacity 0.3s ease, color 0.5s ease;
+            line-height: 1.5;
+        }
+
+        .site-bar:hover {
+            opacity: 0.75;
+        }
+
+        .licenza-text {
+            max-width: 750px;
+            margin: 4px auto 0 auto;
+            font-size: 0.68rem;
+        }
+
+        /* OVERLAYS GLITCH */
+        .glitch-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: transparent;
+            z-index: 99999;
+            pointer-events: none;
+            opacity: 0;
+        }
+
+        body.glitch-active { animation: bodyPageDestroy 0.45s steps(1) forwards; }
+        body.glitch-active .titolo-container, body.glitch-active .social-footer, body.glitch-active .theme-progress-container, body.glitch-active .logo-sfondo-container, body.glitch-active .site-bar { animation: horizontalSliceGlitch 0.45s linear infinite; }
+        body.glitch-active .glitch-overlay { opacity: 1; background: repeating-linear-gradient(0deg, var(--scanline-color), var(--scanline-color) 3px, transparent 3px, transparent 7px); animation: fastScanline 0.15s linear infinite; }
+
+        @keyframes horizontalSliceGlitch {
+            0% { transform: translate(0, 0); filter: none; }
+            15% { transform: translate(-22px, -2px); clip-path: inset(12% 0 78% 0); }
+            30% { transform: translate(25px, 3px); clip-path: inset(38% 0 40% 0); }
+            45% { transform: translate(-4px, -6px); clip-path: inset(65% 0 10% 0); }
+            60% { transform: translate(12px, 0px); clip-path: inset(0% 0 55% 0); }
+            75% { transform: translate(-28px, 4px); clip-path: inset(82% 0 0% 0); }
+            90% { transform: translate(0, 0); clip-path: none; }
+        }
+
+        @keyframes bodyPageDestroy {
+            0% { background: var(--glitch-bg-start); }
+            25% { background: var(--glitch-flash-1); }
+            50% { background: var(--glitch-flash-2); }
+            75% { background: #050505; }
+            100% { background: #000000; filter: brightness(0); }
+        }
+
+        body.theme-glitch-active { animation: themeFlash 0.4s steps(1) forwards; }
+        body.theme-glitch-active .titolo-container, body.theme-glitch-active .social-footer, body.theme-glitch-active .theme-progress-container, body.theme-glitch-active .logo-sfondo-container, body.theme-glitch-active .site-bar { animation: chromaticWobble 0.4s linear infinite; }
+
+        @keyframes themeFlash {
+            0% { background: var(--glitch-bg-start); filter: brightness(1); }
+            50% { background: var(--glitch-flash-1); filter: brightness(1.3); }
+            100% { background: var(--bg-main); filter: brightness(1); }
+        }
+
+        @keyframes chromaticWobble {
+            0%, 100% { transform: translate(0, 0) skewX(0deg); }
+            25% { transform: translate(-4px, 2px) skewX(-5deg); }
+            75% { transform: translate(4px, -2px) skewX(5deg); }
+        }
+
+        @keyframes fastScanline {
+            0% { background-position: 0 0; }
+            100% { background-position: 0 100%; }
+        }
+
+        .svg-asset-invisibile {
+            position: absolute;
+            width: 0;
+            height: 0;
+            pointer-events: none;
+        }
+
+        @media (max-width: 768px) {
+            .titolo-principale-link { font-size: 3.8rem; -webkit-box-reflect: below -12px linear-gradient(transparent 50%, rgba(255, 255, 255, 0.2)); }
+            .titolo-container { padding: 25px 45px; transform: none !important; }
+            .logo-personalizzato-bg { width: 150vw; height: 100vh; }
+            .logo-sfondo-container { clip-path: none !important; -webkit-clip-path: none !important; filter: none !important; }
+            .social-footer { bottom: 110px; }
+            .site-bar { padding: 10px; font-size: 0.65rem; }
+            .licenza-text { font-size: 0.6rem; max-width: 90%; }
+            .vinyl-cursor { display: none !important; }
+            body, a, button, .titolo-principale-link, .social-link { cursor: pointer !important; }
+        }
+    </style>
+</head>
+<body>
+
+    <svg class="svg-asset-invisibile">
+        <defs>
+            <filter id="liquid-goo">
+                <feTurbulence type="fractalNoise" baseFrequency="0.015" numOctaves="4" result="noise" />
+                <feDisplacementMap in="SourceGraphic" in2="noise" scale="10" xChannelSelector="R" yChannelSelector="G" />
+            </filter>
+            
+            <clipPath id="bubblyClip" clipPathUnits="userSpaceOnUse">
+                <path id="bubblyPath" d="M -160,0 C -160,-90 -90,-160 0,-160 C 100,-160 170,-80 160,0 C 150,90 90,170 0,160 C -95,150 -160,90 -160,0 Z" />
+            </clipPath>
+        </defs>
+    </svg>
+
+    <canvas id="tvNoiseCanvas"></canvas>
+
+    <div class="glitch-overlay" id="glitchOverlay"></div>
+    <div class="vinyl-cursor" id="vinylCursor"></div>
+
+    <div class="logo-sfondo-container" id="logoMaskContainer">
+        <img src="logo.PNG" alt="Isaak Big Logo" class="logo-personalizzato-bg" id="bigLogo">
+    </div>
+
+    <button class="theme-progress-container" id="themeProgressBtn" onclick="toggleDarkMode()" aria-label="Cambia modalità tema">
+        <div class="progress-bar">
+            <div class="progress-chunk" id="chunk-1"></div>
+            <div class="progress-chunk" id="chunk-2"></div>
+            <div class="progress-chunk" id="chunk-3"></div>
+            <div class="progress-chunk" id="chunk-4"></div>
+            <div class="progress-chunk" id="chunk-5"></div>
+        </div>
+        <div class="theme-label" id="themeLabel">light</div>
+    </button>
+
+    <div class="titolo-container" id="mainTitleContainer">
+        <svg class="squircle-svg" xmlns="http://www.w3.org/2000/svg">
+            <rect class="squircle-glow" x="1" y="1" width="calc(100% - 2px)" height="calc(100% - 2px)" rx="36" ry="36" pathLength="1200" />
+        </svg>
+        <a href="hub.html" id="mainTitleLink" class="titolo-principale-link">isaaks portfolio</a>
+    </div>
+    
+    <div class="social-footer">
+        <a href="https://www.instagram.com/isaak.did.it?igsh=MXR3am9lMDllcjhzbA%3D%3D&utm_source=qr" target="_blank" rel="noopener noreferrer" class="social-link" aria-label="Instagram">
+            <svg viewBox="0 0 24 24" class="social-icon">
+                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204 0.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.051.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/>
+            </svg>
+        </a>
+        <a href="https://open.spotify.com/artist/47U7DbLH6o2vPyTumv5KD7?si=sXiSLwScTCWdbxAzCW3Nqg&utm_source=copy-link" target="_blank" rel="noopener noreferrer" class="social-link" aria-label="Spotify">
+            <svg viewBox="0 0 24 24" class="social-icon">
+                <path d="M12 0C5.373 0 0 5.372 0 12s5.373 12 12 12 12-5.372 12-12S18.627 0 12 0zm5.494 17.307c-.217.356-.684.469-1.04.252-2.875-1.758-6.495-2.156-10.757-1.18-.406.092-.814-.162-.907-.568-.093-.406.162-.814.569-.907 4.658-1.066 8.64-.616 11.884 1.37.356.218.47.684.252 1.04zm1.467-3.258c-.273.443-.853.587-1.294.315-3.29-2.022-8.306-2.607-12.196-1.426-.497.15-1.023-.13-1.173-.627-.15-.496.13-1.022.626-1.172 4.45-1.35 9.976-.693 13.723 1.613.442.272.585.852.314 1.297zm.126-3.39C15.183 8.3 8.746 8.086 5.016 9.218c-.59.18-1.22-.152-1.4-.743-.18-.59.153-1.22.743-1.4 4.285-1.3 11.41-1.055 16.1 1.73.53.315.706.997.39 1.53-.314.53-.996.704-1.528.39z"/>
+            </svg>
+        </a>
+        <a href="mailto:isaakmusic7@gmail.com" class="social-link" aria-label="Email">
+            <svg viewBox="0 0 24 24" class="social-icon">
+                <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+            </svg>
+        </a>
+    </div>
+
+    <footer class="site-bar">
+        <div>© 2026 isaak. all rights reserved.</div>
+        <div class="licenza-text">
+            all beats are property of isaak. tracks are published under creative commons license (cc by-nc-nd 4.0). 
+            streaming and listening only. unauthorized download, redistribution, or commercial use is strictly prohibited.
+        </div>
+    </footer>
+
+    <script>
+        const canvas = document.getElementById('tvNoiseCanvas');
+        const ctx = canvas.getContext('2d');
+        const vinyl = document.getElementById('vinylCursor');
+        const themeProgressBtn = document.getElementById('themeProgressBtn');
+        const themeLabel = document.getElementById('themeLabel');
+        const logoMaskContainer = document.getElementById('logoMaskContainer');
+        const mainTitleContainer = document.getElementById('mainTitleContainer');
+        const bubblyPath = document.getElementById('bubblyPath');
+
+        let glitchActive = false;
+        let targetX = 0, targetY = 0;
+        let currentX = 0, currentY = 0;
+        
+        let bubbleX = -1000, bubbleY = -1000;
+        let targetBubbleX = -1000, targetBubbleY = -1000;
+        
+        let lastBubbleX = bubbleX;
+        let lastBubbleY = bubbleY;
+        let bubbleRotation = 0;
+        let bubbleScaleX = 1;
+        let bubbleScaleY = 1;
+        
+        let isTitleGlitch = false;
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        function generateNoise() {
+            const w = canvas.width;
+            const h = canvas.height;
+            if (w === 0 || h === 0) {
+                requestAnimationFrame(generateNoise);
+                return;
+            }
+            const imgData = ctx.createImageData(w, h);
+            const data = imgData.data;
+            const len = data.length;
+            const isDarkMode = document.body.classList.contains('dark-mode');
+
+            if (!glitchActive) {
+                for (let i = 0; i < len; i += 4) {
+                    const noise = Math.random() * 255;
+                    data[i]     = noise; 
+                    data[i + 1] = noise; 
+                    data[i + 2] = noise; 
+                    data[i + 3] = 255;   
+                }
+            } else {
+                for (let i = 0; i < len; i += 4) {
+                    const noise = Math.random() * 255;
+                    
+                    if (isTitleGlitch) {
+                        if (isDarkMode) {
+                            data[i]     = noise * 0.86 + 30; 
+                            data[i + 1] = noise * 0.1;       
+                            data[i + 2] = noise * 0.86 + 30; 
+                        } else {
+                            const darkNoise = noise * 0.4;
+                            data[i]     = darkNoise + 50; 
+                            data[i + 1] = darkNoise;      
+                            data[i + 2] = darkNoise + 50; 
+                        }
+                    } else {
+                        data[i]     = noise; 
+                        data[i + 1] = noise; 
+                        data[i + 2] = noise; 
+                    }
+                    data[i + 3] = 255;
+                }
+            }
+            ctx.putImageData(imgData, 0, 0);
+            requestAnimationFrame(generateNoise);
+        }
+
+        function triggerRandomGlitch() {
+            const delay = Math.random() * 2000 + 1000; 
+            setTimeout(() => {
+                if (!document.body.classList.contains('glitch-active') && !document.body.classList.contains('theme-glitch-active')) {
+                    glitchActive = true;
+                    canvas.style.transform = `scale(${1 + Math.random() * 0.02}) skewX(${Math.random() * 2 - 1}deg)`;
+                    setTimeout(() => {
+                        glitchActive = false;
+                        canvas.style.transform = 'none';
+                        triggerRandomGlitch();
+                    }, Math.random() * 70 + 40); 
+                } else {
+                    triggerRandomGlitch();
+                }
+            }, delay);
+        }
+
+        function startTextGlitchLoop() {
+            setInterval(() => {
+                if (!document.body.classList.contains('glitch-active') && !document.body.classList.contains('theme-glitch-active')) {
+                    mainTitleContainer.classList.add('global-glitch-active');
+                    logoMaskContainer.classList.add('global-glitch-active');
+                    isTitleGlitch = true;
+                    glitchActive = true; 
+
+                    setTimeout(() => {
+                        mainTitleContainer.classList.remove('global-glitch-active');
+                        logoMaskContainer.classList.remove('global-glitch-active');
+                        isTitleGlitch = false;
+                        glitchActive = false;
+                    }, 350); 
+                }
+            }, 7000); 
+        }
+
+        function updatePositions() {
+            if (window.innerWidth > 768) {
+                currentX += (targetX - currentX) * 0.1;
+                currentY += (targetY - currentY) * 0.1;
+                mainTitleContainer.style.transform = `translate(${currentX}px, ${currentY}px)`;
+            }
+
+            bubbleX += (targetBubbleX - bubbleX) * 0.25;
+            bubbleY += (targetBubbleY - bubbleY) * 0.25;
+            
+            let vx = bubbleX - lastBubbleX;
+            let vy = bubbleY - lastBubbleY;
+            
+            lastBubbleX = bubbleX;
+            lastBubbleY = bubbleY;
+            
+            let speed = Math.sqrt(vx * vx + vy * vy);
+            
+            let targetAngle = bubbleRotation; 
+            if (speed > 0.1) {
+                targetAngle = Math.atan2(vy, vx) * 180 / Math.PI;
+            }
+            
+            let stretchIntensity = Math.min(speed * 0.001, 0.22); 
+            let targetScaleX = 1 + stretchIntensity;
+            let targetScaleY = 1 / targetScaleX; 
+            
+            if (targetBubbleX === -1000) {
+                targetAngle = bubbleRotation; 
+                targetScaleX = 1;
+                targetScaleY = 1;
+            }
+            
+            bubbleRotation += (targetAngle - bubbleRotation) * 0.2;
+            bubbleScaleX += (targetScaleX - bubbleScaleX) * 0.2;
+            bubbleScaleY += (targetScaleY - bubbleScaleY) * 0.2;
+            
+            bubblyPath.setAttribute('transform', 
+                `translate(${bubbleX}, ${bubbleY}) ` +
+                `rotate(${bubbleRotation}) ` +
+                `scale(${bubbleScaleX}, ${bubbleScaleY})`
+            );
+
+            requestAnimationFrame(updatePositions);
+        }
+        requestAnimationFrame(updatePositions);
+
+        window.addEventListener('mousemove', (e) => {
+            vinyl.style.left = e.clientX + 'px';
+            vinyl.style.top = e.clientY + 'px';
+
+            targetBubbleX = e.clientX;
+            targetBubbleY = e.clientY;
+
+            if (window.innerWidth > 768) {
+                const rect = mainTitleContainer.getBoundingClientRect();
+                const titleCenterX = rect.left + rect.width / 2 - currentX;
+                const titleCenterY = rect.top + rect.height / 2 - currentY;
+
+                const deltaX = e.clientX - titleCenterX;
+                const deltaY = e.clientY - titleCenterY;
+                const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+                const activationRadius = 500;
+
+                if (distance < activationRadius) {
+                    const intensity = (1 - (distance / activationRadius)); 
+                    targetX = deltaX * 0.12 * intensity; 
+                    targetY = deltaY * 0.12 * intensity; 
+                } else {
+                    targetX = 0;
+                    targetY = 0;
+                }
+            }
+        });
+
+        window.addEventListener('mouseleave', () => {
+            targetX = 0;
+            targetY = 0;
+            targetBubbleX = -1000;
+            targetBubbleY = -1000;
+            document.getElementById('bigLogo').style.opacity = '0';
+        });
+        
+        window.addEventListener('mouseenter', () => {
+            document.getElementById('bigLogo').style.opacity = '0.18';
+        });
+
+        themeProgressBtn.addEventListener('mouseenter', () => vinyl.classList.add('on-progress'));
+        themeProgressBtn.addEventListener('mouseleave', () => vinyl.classList.remove('on-progress'));
+
+        document.querySelectorAll('a, button, .titolo-principale-link').forEach(el => {
+            el.addEventListener('click', function(e) {
+                if (this.tagName === 'A' && this.getAttribute('href') && this.getAttribute('target') !== '_blank' && !this.getAttribute('href').startsWith('mailto:')) {
+                    e.preventDefault();
+                    const destinazione = this.getAttribute('href');
+                    
+                    if(!vinyl.classList.contains('on-progress')) {
+                        vinyl.classList.remove('spin');
+                        void vinyl.offsetWidth;
+                        vinyl.classList.add('spin');
+                    }
+                    
+                    setTimeout(() => {
+                        document.body.classList.add('glitch-active');
+                        glitchActive = true;
+                        canvas.style.opacity = "0.55"; 
+
+                        setTimeout(() => { window.location.href = destinazione; }, 450);
+                    }, 300);
+                }
+            });
+        });
+
+        function updateLabel(isDark) { 
+            themeLabel.textContent = isDark ? 'dark' : 'light'; 
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const currentTheme = localStorage.getItem('theme');
+            if (currentTheme === 'dark') {
+                document.body.classList.add('dark-mode');
+                updateLabel(true);
+            } else { 
+                updateLabel(false); 
+            }
+            
+            requestAnimationFrame(generateNoise);
+            triggerRandomGlitch();
+            startTextGlitchLoop();
+        });
+
+        function toggleDarkMode() {
+            if (document.body.classList.contains('theme-glitch-active') || document.body.classList.contains('glitch-active')) return;
+
+            document.body.classList.add('theme-glitch-active');
+            glitchActive = true;
+            canvas.style.opacity = "0.55"; 
+
+            setTimeout(() => {
+                document.body.classList.toggle('dark-mode');
+                const isDark = document.body.classList.contains('dark-mode');
+                localStorage.setItem('theme', isDark ? 'dark' : 'light');
+                updateLabel(isDark);
+            }, 200);
+
+            setTimeout(() => {
+                document.body.classList.remove('theme-glitch-active');
+                glitchActive = false;
+                canvas.style.opacity = "0.28"; 
+            }, 400);
+        }
+    </script>
+</body>
+</html>
