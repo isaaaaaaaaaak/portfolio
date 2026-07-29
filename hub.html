@@ -1,0 +1,1075 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Isaak - Hub & Selection</title>
+    <style>
+        @font-face {
+            font-family: 'DrunkFonts';
+            src: url('DRUNKFONTS-Regular.otf') format('opentype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        /* CONFIGURAZIONE VARIABILI DI TEMA (LIGHT MODE DEFAULT) */
+        body {
+            --bg-main: radial-gradient(circle at center, #f5e6f5 0%, #e2c1e2 60%, #c99ec9 100%);
+            --color-text: #121212;
+            --color-glow: rgba(221, 160, 221, 0.6); 
+            
+            --glitch-bg-start: #e2c1e2;
+            --glitch-flash-1: #c99ec9;
+            --glitch-flash-2: #121212;
+            --glitch-shadow-1: #dda0dd;
+            --glitch-shadow-2: #121212;
+            --glitch-filter-1: brightness(1.2) contrast(1.5);
+            --glitch-filter-2: brightness(0.8) contrast(1.5);
+            --scanline-color: rgba(18, 18, 18, 0.07);
+
+            --arrow-glitch-1: #df6bdf;
+            --arrow-glitch-2: #000000;
+
+            --text-glitch-1: #dda0dd;
+            --text-glitch-2: #c99ec9;
+            --bg-hover-side: rgba(18, 18, 18, 0.08);
+
+            /* BACKDROP CARD - LIGHT MODE */
+            --card-bg: rgba(255, 255, 255, 0.25);
+            --card-border: rgba(18, 18, 18, 0.15);
+            --card-shadow: rgba(18, 18, 18, 0.05);
+
+            /* BLEND FOTO - LIGHT MODE */
+            --face-blend: multiply;
+            --face-opacity: 0.8;
+            --face-filter: grayscale(100%) contrast(1.2) brightness(1.0);
+            --face-hover-filter: grayscale(0%) contrast(1.4) brightness(1.1) hue-rotate(15deg);
+
+            /* SCANNER COLOR - LIGHT MODE */
+            --scanner-color: rgba(18, 18, 18, 0.4);
+
+            background: var(--bg-main);
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', sans-serif;
+            
+            transition: background 0.5s ease, color 0.5s ease, border-color 0.5s ease, box-shadow 0.5s ease, filter 0.5s ease;
+            
+            position: relative;
+            cursor: none !important;
+            color: var(--color-text);
+            
+            height: 100vh;
+            overflow: hidden; 
+        }
+
+        /* TEXTURE RETRO-DIGITALE (Scanlines) */
+        body::before {
+            content: " ";
+            display: block;
+            position: absolute;
+            top: 0; left: 0; bottom: 0; right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.05) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.01), rgba(0, 255, 0, 0.005), rgba(0, 255, 0, 0.01));
+            z-index: 20;
+            background-size: 100% 4px, 6px 100%;
+            pointer-events: none;
+            position: fixed;
+            transition: background 0.5s ease, opacity 0.4s ease, filter 0.4s ease;
+        }
+
+        /* CONFIGURAZIONE VARIABILI (DARK MODE) */
+        body.dark-mode {
+            --bg-main: radial-gradient(circle at center, #000000 0%, #0d0d0d 60%, #161616 100%);
+            --color-text: #DDA0DD;
+            --color-glow: rgba(221, 160, 221, 0.8);
+            
+            --glitch-bg-start: #161616;
+            --glitch-flash-1: #0d0d0d;
+            --glitch-flash-2: #242424;
+            --glitch-shadow-1: #DDA0DD;
+            --glitch-shadow-2: #4a3152;
+            --scanline-color: rgba(221, 160, 221, 0.09);
+
+            --arrow-glitch-1: #f7c5f7;
+            --arrow-glitch-2: #381a3d;
+
+            --text-glitch-1: #ff7fff;
+            --text-glitch-2: #00ffff;
+            --bg-hover-side: rgba(221, 160, 221, 0.06);
+
+            /* BACKDROP CARD - DARK MODE */
+            --card-bg: rgba(18, 18, 18, 0.55);
+            --card-border: rgba(221, 160, 221, 0.25);
+            --card-shadow: rgba(221, 160, 221, 0.35); 
+            
+            --glitch-filter-1: brightness(0.6) contrast(1.8);
+            --glitch-filter-2: brightness(1.4) contrast(1.5);
+
+            /* BLEND FOTO - DARK MODE */
+            --face-blend: screen;
+            --face-opacity: 0.7;
+            --face-filter: grayscale(100%) contrast(1.4) brightness(0.9);
+            --face-hover-filter: grayscale(0%) contrast(1.6) brightness(1.2);
+
+            /* SCANNER COLOR - DARK MODE */
+            --scanner-color: rgba(221, 160, 221, 0.6);
+        }
+
+        body.dark-mode::before {
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.22) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
+            background-size: 100% 5px, 6px 100%;
+        }
+
+        a, button, .split-side, .btn-back-arrow, .intro-container, .scroll-indicator, .go-back-indicator, .photo-frame, .bio-backdrop-card {
+            cursor: none !important;
+        }
+
+        /* CURSORE PERSONALIZZATO VINILE */
+        .vinyl-cursor {
+            position: fixed;
+            top: 0; left: 0; width: 32px; height: 32px;
+            pointer-events: none;
+            z-index: 9999999 !important;
+            transform: translate(-50%, -50%) scale(1);
+            will-change: left, top, transform;
+            transition: transform 0.2s cubic-bezier(0.25, 1, 0.5, 1);
+            opacity: 1 !important;
+        }
+
+        .vinyl-cursor::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle, #3a3a3a 3px, #121212 4px, #2a2a2a 7px, #121212 9px, #3a3a3a 11px, #121212 12px);
+            border-radius: 50%;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+            transition: opacity 0.2s ease, background 0.5s ease, box-shadow 0.5s ease;
+            opacity: 1;
+        }
+
+        body.dark-mode .vinyl-cursor::before {
+            background: radial-gradient(circle, #1a1a1a 3px, #DDA0DD 4px, #2a2a2a 7px, #DDA0DD 9px, #111111 11px, #DDA0DD 12px);
+            box-shadow: 0 4px 12px rgba(221, 160, 221, 0.4);
+        }
+
+        .vinyl-cursor::after {
+            content: '';
+            position: absolute;
+            top: -2px; left: -2px; width: 24px; height: 24px;
+            background-size: contain;
+            background-repeat: no-repeat;
+            opacity: 0;
+            transform: scale(0.8) translate(5px, 5px);
+            transition: opacity 0.2s ease, transform 0.2s ease, background-image 0.5s ease;
+        }
+
+        body {
+            --cursor-svg: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'><path d='M4.5 3v15.2l3.9-3.9 2.7 6.3 2.7-1.2-2.7-6.3 5.4-.1z' fill='%23121212'/></svg>");
+        }
+        body.dark-mode {
+            --cursor-svg: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'><path d='M4.5 3v15.2l3.9-3.9 2.7 6.3 2.7-1.2-2.7-6.3 5.4-.1z' fill='%23DDA0DD'/></svg>");
+        }
+        .vinyl-cursor::after { background-image: var(--cursor-svg); }
+        .vinyl-cursor.on-progress::before { opacity: 0; }
+        .vinyl-cursor.on-progress::after { opacity: 1; transform: scale(1.1) translate(0, 0); }
+        .vinyl-cursor.spin::before { animation: spinVinyl 0.3s cubic-bezier(0.25, 1, 0.5, 1) forwards; }
+
+        @keyframes spinVinyl {
+            0% { transform: scale(1.2) rotate(0deg); }
+            100% { transform: scale(1) rotate(360deg); }
+        }
+
+        /* INTERFACCIA NAVIGATION */
+        .btn-back-arrow {
+            position: fixed;
+            top: 35px; left: 40px; 
+            text-decoration: none;
+            color: var(--color-text);
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0.6;
+            transition: opacity 0.3s ease, color 0.5s ease, transform 0.3s ease, filter 0.4s ease;
+        }
+        .btn-back-arrow svg { fill: currentColor; width: 32px; height: 32px; transition: filter 0.3s ease, fill 0.5s ease; }
+        .btn-back-arrow:hover { opacity: 1; transform: translateX(-4px); }
+        .btn-back-arrow:hover svg { filter: drop-shadow(2px 0px 0px var(--arrow-glitch-1)) drop-shadow(-2px 0px 0px var(--arrow-glitch-2)); }
+
+        .theme-progress-container {
+            position: fixed;
+            top: 35px; left: 50%;
+            transform: translateX(-50%);
+            display: flex; flex-direction: column; align-items: center; gap: 6px;
+            background: transparent; border: none; outline: none; padding: 0;
+            z-index: 100; opacity: 0.6; transition: opacity 0.3s ease, filter 0.4s ease;
+        }
+        .theme-progress-container:hover { opacity: 1; }
+        .progress-bar { width: 60px; height: 12px; border: 2px solid var(--color-text); padding: 2px; display: flex; gap: 2px; box-sizing: border-box; transition: border-color 0.5s ease; }
+        .progress-chunk { flex: 1; height: 100%; background-color: transparent; border: 1px solid transparent; transition: background-color 0.3s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.3s ease; }
+        
+        body.dark-mode #chunk-1 { background-color: var(--color-text) !important; opacity: 0.2; }
+        body.dark-mode #chunk-2 { background-color: var(--color-text) !important; opacity: 0.4; }
+        body.dark-mode #chunk-3 { background-color: var(--color-text) !important; opacity: 0.6; }
+        body.dark-mode #chunk-4 { background-color: var(--color-text) !important; opacity: 0.8; }
+        body.dark-mode #chunk-5 { background-color: var(--color-text) !important; opacity: 1.0; }
+        .theme-label { font-family: monospace; font-size: 0.75rem; letter-spacing: 1.5px; color: var(--color-text); text-transform: lowercase; transition: color 0.5s ease; }
+
+        /* SCROLL ENGINE LAYOUT CONTAINER */
+        .scroll-wrapper {
+            width: 100%;
+            height: 200vh; 
+            position: relative;
+            z-index: 10;
+            will-change: transform;
+        }
+
+        /* RESETS DI STRUTTURA PER IL PRIMO PIANO */
+        body.focus-attivo .scroll-wrapper {
+            transform: none !important;
+            will-change: auto !important;
+        }
+        body.focus-attivo .intro-container {
+            transform: none !important;
+            will-change: auto !important;
+        }
+
+        /* 1. SEZIONE INTRO */
+        .intro-container {
+            display: flex;
+            width: 100%;
+            height: 100vh;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 10;
+            box-sizing: border-box;
+            will-change: transform, opacity;
+            transition: filter 0.5s ease, opacity 0.5s ease;
+        }
+
+        .intro-photo-side {
+            width: 50%; 
+            display: flex;
+            flex-direction: column;
+            align-items: center;     
+            justify-content: center;    
+            padding: 40px; 
+            box-sizing: border-box;
+            z-index: 11;
+            transition: opacity 0.5s ease, filter 0.4s cubic-bezier(0.25, 1, 0.5, 1), z-index 0.4s ease;
+        }
+
+        /* FRAME FOTO */
+        .photo-frame {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            max-width: 580px; 
+            height: 80vh;
+            background: transparent;
+            perspective: 1000px; 
+            overflow: visible;
+            position: relative;
+            z-index: 12;
+            filter: drop-shadow(0px 0px 45px rgba(18, 18, 18, 0.25)); 
+            transition: filter 0.15s cubic-bezier(0.25, 0.8, 0.25, 1), transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+            will-change: filter, transform;
+        }
+
+        body.dark-mode .photo-frame {
+            filter: drop-shadow(0px 0px 50px rgba(221, 160, 221, 0.35)); 
+        }
+
+        /* CONTENITORE FOTO SENZA MASCHERA ELLITTICA */
+        .photo-clip-mask {
+            width: 95%;
+            height: auto;
+            max-height: 68vh;
+            aspect-ratio: 3 / 4;
+            background: transparent;
+            overflow: visible;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transform-style: preserve-3d;
+            transition: transform 0.15s cubic-bezier(0.25, 0.8, 0.25, 1);
+            will-change: transform;
+            position: relative;
+        }
+
+        /* LINEA SCANNER */
+        .scanner-line {
+            position: absolute;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: var(--scanner-color);
+            box-shadow: 0 0 8px var(--scanner-color);
+            z-index: 15;
+            pointer-events: none;
+            opacity: 1;
+            top: 0%;
+            animation: slowScan 6.0s linear infinite;
+        }
+
+        @keyframes slowScan {
+            0% { top: 0%; }
+            100% { top: 100%; }
+        }
+
+        /* FOTO BLENDATA */
+        .cyber-face-img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            display: block;
+            mix-blend-mode: var(--face-blend);
+            opacity: var(--face-opacity);
+            filter: var(--face-filter);
+            transition: filter 0.4s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.5s ease, mix-blend-mode 0.5s ease;
+            will-change: filter;
+        }
+
+        /* DISTORSIONE GLITCH AUTOMATICA */
+        .photo-clip-mask.auto-glitch-active .cyber-face-img { animation: extremePhotoDestroy 0.45s steps(1) infinite; }
+        .photo-clip-mask.auto-glitch-active .scanner-line { animation: extremeScannerDestroy 0.45s steps(1) infinite; }
+
+        @keyframes extremePhotoDestroy {
+            0%, 100% { transform: scale(1) translateX(0) skewX(0deg); filter: grayscale(100%) contrast(1.2) brightness(1); opacity: var(--face-opacity); }
+            15% { transform: scale(1.4) translateX(-45px) skewX(-20deg); filter: grayscale(100%) brightness(0.1) contrast(4); opacity: 0.4; }
+            30% { transform: scale(0.6) translateX(60px) skewX(35deg); filter: grayscale(100%) invert(1) brightness(0.3); opacity: 0.15; }
+            45% { transform: scale(1.7) translateX(-70px) translateY(20px); filter: grayscale(100%) brightness(0) drop-shadow(0 0 30px #DDA0DD); opacity: 0.3; }
+            60% { transform: scale(0.4) translateX(-10px) skewX(-45deg); filter: grayscale(100%) contrast(8) brightness(0.2); opacity: 0.05; }
+            75% { transform: scale(1.3) translateX(50px) skewX(15deg); filter: grayscale(100%) brightness(0.1); opacity: 0.2; }
+            90% { transform: scale(0.9) translateY(-40px) skewX(50deg); filter: grayscale(100%) invert(0.9) brightness(0.2); opacity: 0.1; }
+        }
+
+        @keyframes extremeScannerDestroy {
+            0%, 100% { transform: scaleX(1) translateX(0); filter: none; opacity: 1; background: var(--scanner-color); }
+            20% { transform: scaleY(25) scaleX(2.5) translateX(-60px); background: #121212; box-shadow: 0 0 20px #121212; opacity: 0.9; }
+            40% { opacity: 0; }
+            60% { transform: scaleY(40) scaleX(0.2) translateX(80px); background: #DDA0DD; box-shadow: 0 0 35px #DDA0DD; opacity: 0.8; }
+            80% { transform: scaleY(2) translateX(-100px); background: #000000; opacity: 0.4; }
+        }
+
+        .intro-text-side {
+            width: 50%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center; 
+            align-items: flex-start;     
+            padding: 40px 40px 40px 20px; 
+            box-sizing: border-box;
+            z-index: 11;
+            transition: opacity 0.5s ease, filter 0.4s cubic-bezier(0.25, 1, 0.5, 1), z-index 0.4s ease;
+        }
+
+        /* CARD BIO */
+        .bio-backdrop-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            box-shadow: 0 8px 32px var(--card-shadow);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border-radius: 12px;
+            padding: 45px;
+            width: 100%;
+            max-width: 720px; 
+            box-sizing: border-box;
+            z-index: 12;
+            transition: background 0.5s ease, border-color 0.5s ease, box-shadow 0.5s ease, transform 0.4s cubic-bezier(0.25, 1, 0.5, 1), color 0.5s ease, top 0.4s ease, left 0.4s ease;
+        }
+
+        .bio-backdrop-card h1 {
+            font-family: 'DrunkFonts', sans-serif;
+            font-size: 4.8rem;
+            margin: 0 0 32px 0; 
+            text-transform: lowercase;
+            line-height: 0.9;
+        }
+
+        .intro-subtitle {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 1.1rem;
+            opacity: 0.6;
+            margin: 0 0 28px 0; 
+            letter-spacing: 1.5px;
+            text-transform: lowercase;
+        }
+
+        .intro-bio {
+            font-family: monospace;
+            font-size: 1.05rem;
+            line-height: 1.65;
+            opacity: 0.9;
+            margin: 0;
+            text-align: left;
+        }
+
+        .intro-bio .bio-cta {
+            display: block;
+            margin-top: 20px;
+            font-weight: bold;
+            opacity: 1;
+        }
+
+        /* LOGICA DI SFOCATURA SELETTIVA E CENTRATURA ASSOLUTA RIFINITA */
+        body.bio-focus-attivo .intro-photo-side,
+        body.bio-focus-attivo .scroll-indicator,
+        body.bio-focus-attivo .btn-back-arrow,
+        body.bio-focus-attivo .theme-progress-container,
+        body.bio-focus-attivo::before {
+            filter: blur(15px) !important;
+            pointer-events: none !important;
+        }
+        
+        body.bio-focus-attivo .intro-photo-side {
+            z-index: 1 !important;
+        }
+
+        /* BIO IN PRIMO PIANO - CENTRATA AL 100% */
+        .bio-backdrop-card.in-focus {
+            z-index: 99999 !important; 
+            position: fixed !important;
+            top: 50% !important;
+            left: 50% !important;
+            transform: translate(-50%, -50%) scale(1.05) !important;
+            max-width: 680px;
+            background: #ffffff !important; 
+            color: #121212 !important;
+            border-color: var(--color-glow) !important;
+            box-shadow: 0 30px 90px rgba(0,0,0,0.35) !important;
+            backdrop-filter: none !important; 
+            -webkit-backdrop-filter: none !important;
+        }
+        
+        body.dark-mode .bio-backdrop-card.in-focus {
+            background: #121212 !important;
+            color: #DDA0DD !important;
+            box-shadow: 0 30px 90px rgba(221, 160, 221, 0.25) !important;
+        }
+
+        body.photo-focus-attivo .intro-text-side,
+        body.photo-focus-attivo .scroll-indicator,
+        body.photo-focus-attivo .btn-back-arrow,
+        body.photo-focus-attivo .theme-progress-container,
+        body.photo-focus-attivo::before {
+            filter: blur(15px) !important;
+            pointer-events: none !important;
+        }
+
+        body.photo-focus-attivo .intro-text-side {
+            z-index: 1 !important;
+        }
+
+        /* FOTO IN PRIMO PIANO - CENTRATA AL 100% */
+        .photo-frame.in-focus {
+            z-index: 99999 !important; 
+            position: fixed !important;
+            top: 50% !important;
+            left: 50% !important;
+            transform: translate(-50%, -50%) scale(1.0) !important;
+            perspective: none !important;
+            filter: drop-shadow(0 20px 80px rgba(0,0,0,0.5)) !important;
+            background: transparent !important;
+        }
+
+        body.dark-mode .photo-frame.in-focus {
+            filter: drop-shadow(0 20px 80px rgba(221, 160, 221, 0.45)) !important;
+        }
+
+        .photo-frame.in-focus .photo-clip-mask {
+            transform: none !important; 
+            overflow: visible !important;
+            width: 100% !important;
+            height: 100% !important;
+            max-height: 80vh !important;
+            background: transparent !important;
+        }
+
+        .photo-frame.in-focus .cyber-face-img {
+            mix-blend-mode: normal !important; 
+            filter: grayscale(0%) contrast(1.0) brightness(1.0) !important; 
+            opacity: 1 !important;
+            object-fit: contain !important; 
+            background: transparent !important;
+        }
+
+        .photo-frame.in-focus .scanner-line { display: none !important; }
+
+        /* INDICATORI DI SCROLL */
+        .scroll-indicator, .go-back-indicator {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            font-family: monospace;
+            font-size: 0.75rem;
+            letter-spacing: 2px;
+            opacity: 0.5;
+            z-index: 30;
+            transition: opacity 0.4s ease, color 0.5s ease, filter 0.4s ease;
+            background: transparent;
+            border: none;
+            color: inherit;
+            padding: 10px 20px;
+        }
+
+        .scroll-indicator { bottom: 40px; animation: pulseScroll 1.5s infinite alternate; }
+        .go-back-indicator { bottom: 40px; animation: pulseScrollBack 1.5s infinite alternate; opacity: 0; pointer-events: none; }
+
+        @keyframes pulseScroll { 0% { transform: translate(-50%, 0); opacity: 0.3; } 100% { transform: translate(-50%, 8px); opacity: 0.7; } }
+        @keyframes pulseScrollBack { 0% { transform: translate(-50%, 0); opacity: 0.3; } 100% { transform: translate(-50%, -8px); opacity: 0.7; } }
+
+        /* 2. SEZIONE SELEZIONE */
+        .split-container {
+            display: flex;
+            width: 100%;
+            height: 100vh;
+            position: absolute;
+            top: 100vh; 
+            left: 0;
+            z-index: 5;
+            background: transparent;
+            will-change: opacity;
+        }
+
+        .split-side {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            color: var(--color-text);
+            opacity: 0.5;
+            transition: background-color 0.4s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.4s cubic-bezier(0.25, 1, 0.5, 1), color 0.5s ease;
+            z-index: 5;
+        }
+
+        .split-container:hover .split-side { opacity: 0.2; }
+        .split-container .split-side:hover { opacity: 1; background-color: var(--bg-hover-side); }
+        .left-side { border-right: 1px solid rgba(18, 18, 18, 0.08); transition: border-color 0.5s ease; }
+        body.dark-mode .left-side { border-right: 1px solid rgba(221, 160, 221, 0.08); }
+
+        .split-title {
+            position: relative;
+            font-family: 'DrunkFonts', sans-serif;
+            font-size: 4rem;
+            letter-spacing: 4px;
+            text-transform: lowercase;
+            transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        .split-side:hover .split-title { transform: scale(1.05); text-shadow: 0 0 15px var(--color-glow); }
+        .split-title::before, .split-title::after { content: attr(data-text); position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: transparent; clip: rect(0, 0, 0, 0); }
+        .split-side:hover .split-title::before { left: 2px; text-shadow: -3px 0 var(--text-glitch-1); animation: hyperGlitch-1 2.5s infinite ease-in-out alternate-reverse; }
+        .split-side:hover .split-title::after { left: -2px; text-shadow: 3px 0 var(--text-glitch-2); animation: hyperGlitch-2 2.1s infinite ease-in-out alternate; }
+
+        @keyframes hyperGlitch-1 {
+            0% { clip: rect(10px, 9999px, 35px, 0); transform: translateX(-1px); opacity: 1; }
+            20% { clip: rect(50px, 9999px, 65px, 0); transform: translateX(1px); opacity: 0.9; }
+            40% { clip: rect(5px, 9999px, 85px, 0); transform: translateX(-2px); opacity: 1; }
+            60% { clip: rect(95px, 9999px, 130px, 0); transform: translateX(2px); opacity: 0.8; }
+            80% { clip: rect(25px, 9999px, 55px, 0); transform: translateX(-1px); opacity: 1; }
+            100% { clip: rect(70px, 9999px, 115px, 0); transform: translateX(1px); opacity: 0.9; }
+        }
+
+        @keyframes hyperGlitch-2 {
+            0% { clip: rect(70px, 9999px, 100px, 0); transform: translateX(2px); opacity: 0.9; }
+            25% { clip: rect(15px, 9999px, 45px, 0); transform: translateX(-2px); opacity: 1; }
+            50% { clip: rect(85px, 9999px, 125px, 0); transform: translateX(1px); opacity: 0.8; }
+            75% { clip: rect(30px, 9999px, 60px, 0); transform: translateX(-2px); opacity: 1; }
+            100% { clip: rect(45px, 9999px, 90px, 0); transform: translateX(2px); opacity: 0.9; }
+        }
+
+        #tvNoiseCanvas {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            z-index: 99998;
+            pointer-events: none;
+            opacity: 0;
+            will-change: opacity;
+            transition: opacity 0.15s ease;
+        }
+
+        /* GLITCH OVERLAYS */
+        .glitch-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: transparent; z-index: 99999; pointer-events: none; opacity: 0; }
+        body.glitch-active { animation: bodyPageDestroy 0.4s steps(1) forwards; }
+        body.glitch-active .scroll-wrapper, body.glitch-active .btn-back-arrow, body.glitch-active .theme-progress-container { animation: horizontalStripesGlitch 0.4s steps(2) infinite; }
+        body.glitch-active .glitch-overlay { opacity: 0.2; background: repeating-linear-gradient(0deg, var(--scanline-color), var(--scanline-color) 3px, transparent 3px, transparent 6px); animation: fastScanline 0.08s linear infinite; }
+
+        @keyframes horizontalStripesGlitch {
+            0% { transform: translateX(0) translateY(0); filter: none; clip-path: none; }
+            15% { transform: translateX(-12px); text-shadow: 4px 0 var(--arrow-glitch-1); }
+            30% { transform: translateX(15px); text-shadow: -4px 0 var(--text-glitch-2); }
+            50% { transform: translateX(-8px); filter: brightness(1.15); }
+            70% { transform: translateX(20px); text-shadow: 5px 0 var(--arrow-glitch-2); }
+            85% { transform: translateX(-4px); filter: invert(0.03); }
+            100% { transform: translateX(0) translateY(0); filter: none; clip-path: none; }
+        }
+
+        @keyframes bodyPageDestroy { 0% { background: var(--glitch-bg-start); opacity: 1; } 50% { background: var(--glitch-flash-1); } 100% { background: var(--glitch-bg-start); opacity: 0; } }
+        @keyframes fastScanline { 0% { background-position: 0 0; } 100% { background-position: 0 40px; } }
+
+        body.theme-glitch-active { animation: themeFlash 0.3s steps(1) forwards; }
+        body.theme-glitch-active .scroll-wrapper, body.theme-glitch-active .intro-container, body.theme-glitch-active .btn-back-arrow, body.theme-glitch-active .theme-progress-container { animation: themeStripesGlitch 0.3s steps(2) infinite; }
+        
+        @keyframes themeStripesGlitch {
+            0% { transform: translateX(0); text-shadow: none; clip-path: none; }
+            20% { transform: translateX(-15px); text-shadow: 5px 0 var(--glitch-shadow-1); }
+            40% { transform: translateX(12px); text-shadow: -5px 0 var(--glitch-shadow-2); }
+            65% { transform: translateX(-18px); text-shadow: 6px 0 var(--glitch-shadow-1); }
+            85% { transform: translateX(10px); text-shadow: -4px 0 var(--glitch-shadow-2); }
+            100% { transform: translateX(0); text-shadow: none; clip-path: none; }
+        }
+        
+        @keyframes themeFlash { 
+            0%, 100% { background: var(--bg-main); filter: none; } 
+            25% { background: var(--glitch-flash-1); filter: var(--glitch-filter-1); }
+            50% { background: var(--glitch-flash-2); filter: var(--glitch-filter-2); }
+            75% { background: var(--glitch-shadow-1); }
+        }
+
+        /* RESPONSIVE LAYOUT */
+        @media (max-width: 768px) {
+            body { height: auto; overflow: auto; }
+            .scroll-wrapper { height: auto; transform: none !important; }
+            .intro-container { flex-direction: column; height: auto; position: relative; top: 0 !important; left: 0 !important; opacity: 1 !important; }
+            .intro-photo-side { width: 100%; border-bottom: 1px solid rgba(18, 18, 18, 0.08); padding: 100px 20px 40px 20px; justify-content: center; height: 50vh; align-items: center; opacity: 1 !important; filter: none !important; }
+            .photo-frame { width: 100%; height: 100%; perspective: none; max-width: 280px; filter: none !important; overflow: visible; }
+            .photo-frame.in-focus { transform: translate(-50%, -50%) scale(1.0) !important; width: 90vw; height: auto; z-index: 99999 !important; }
+            .photo-clip-mask { width: 100%; height: 100%; max-height: 40vh; transform: none !important; overflow: visible; }
+            .scanner-line { display: none !important; }
+            .cyber-face-img { filter: none !important; }
+            .intro-text-side { width: 100%; padding: 40px 20px; text-align: center; align-items: center; opacity: 1 !important; filter: none !important; }
+            .bio-backdrop-card { padding: 30px 20px; background: transparent; border: none; box-shadow: none; backdrop-filter: none; max-width: 100%; }
+            .bio-backdrop-card.in-focus { transform: translate(-50%, -50%) scale(1.0) !important; width: 95vw; padding: 25px; z-index: 99999 !important; }
+            .bio-backdrop-card h1 { font-size: 3.5rem; margin-bottom: 24px; text-align: center; }
+            .intro-subtitle { margin-bottom: 24px; font-size: 1rem; text-align: center; }
+            .intro-bio { text-align: center; }
+            .intro-bio .bio-cta { text-align: center; }
+            .split-container { flex-direction: column; position: relative; top: 0; opacity: 1 !important; }
+            .split-container:hover .split-side { opacity: 0.5; }
+            .split-container .split-side:hover { opacity: 1; background-color: transparent; }
+            .left-side { border-right: none; border-bottom: 1px solid rgba(18, 18, 18, 0.08); }
+            body.dark-mode .left-side { border-bottom: 1px solid rgba(221, 160, 221, 0.08); }
+            .split-title { font-size: 2.8rem; }
+            .vinyl-cursor { display: none !important; }
+            body, a, button, .split-side, .btn-back-arrow, .scroll-indicator, .go-back-indicator { cursor: pointer !important; opacity: 1 !important; pointer-events: auto !important; filter: none !important; }
+            .scroll-indicator, .go-back-indicator { display: block; position: relative; bottom: 0; left: 0; transform: none; margin-top: 30px; animation: none; opacity: 0.7; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="tvNoiseCanvas"></canvas>
+    <div class="glitch-overlay" id="glitchOverlay"></div>
+    <div class="vinyl-cursor" id="vinylCursor"></div>
+
+    <a href="index.html" class="btn-back-arrow" aria-label="Torna alla home">
+        <svg viewBox="0 0 24 24">
+            <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
+        </svg>
+    </a>
+    
+    <button class="theme-progress-container" id="themeProgressBtn" onclick="toggleDarkMode()" aria-label="Cambia modalità tema">
+        <div class="progress-bar">
+            <div class="progress-chunk" id="chunk-1"></div>
+            <div class="progress-chunk" id="chunk-2"></div>
+            <div class="progress-chunk" id="chunk-3"></div>
+            <div class="progress-chunk" id="chunk-4"></div>
+            <div class="progress-chunk" id="chunk-5"></div>
+        </div>
+        <div class="theme-label" id="themeLabel">light</div>
+    </button>
+
+    <div class="scroll-wrapper" id="scrollWrapper">
+
+        <!-- SEZIONE 1: INTRODUZIONE PERSONALE -->
+        <section class="intro-container" id="introSection">
+            <div class="intro-photo-side" id="photoSide">
+                <div class="photo-frame" id="photoFrame">
+                    <div class="photo-clip-mask" id="photoClipMask">
+                        <div class="scanner-line" id="scannerLine"></div>
+                        <!-- Inizialmente impostata su testa.PNG -->
+                        <img id="cyberFace" class="cyber-face-img" src="testa.PNG" alt="Isaak Face">
+                    </div>
+                </div>
+            </div>
+            <div class="intro-text-side" id="textSide">
+                <div class="bio-backdrop-card" id="bioCard">
+                    <h1>isaak</h1>
+                    <div class="intro-subtitle">"tra nostalgia e realtà"</div>
+                    <div class="intro-bio">
+                        Produttore classe '02, Isaak si contraddistingue per il suo suono e stile derivante inizialmente dalla dubstep e riadattato con il tempo dall'influenza dei cantanti con cui ha lavorato. Ha iniziato il seu percorso con la musica approcciandosi alle DAWs nel 2017 e prendendo nel 2024 l'attestato di Tecnico del suono all'Accademia del Cinema di Bologna. La passione nasce dal suo bisogno di comporre musica, oltre che ascoltarla continuamente.
+                        <span class="bio-cta">QUA SOTTO PUOI TROVARE ALCUNI DEI MIEI PROGETTI, DIVISI TRA BEATS E CANZONI.</span>
+                    </div>
+                </div>
+            </div>
+            <button class="scroll-indicator" id="scrollIndicator" aria-label="Scorri giù alle sezioni">↓ scroll down</button>
+        </section>
+
+        <!-- SEZIONE 2: ARCHIVIO SELEZIONE -->
+        <main class="split-container" id="selectionSection">
+            <a href="portfolio_tracce.html" class="split-side left-side">
+                <h2 class="split-title" data-text="songs">songs</h2>
+            </a>
+            <a href="portfolio.html" class="split-side">
+                <h2 class="split-title" data-text="beats">beats</h2>
+            </a>
+            <button class="go-back-indicator" id="goBackBtn" aria-label="Torna all'inizio">↑ go back</button>
+        </main>
+
+    </div>
+
+    <script>
+        const vinyl = document.getElementById('vinylCursor');
+        const themeProgressBtn = document.getElementById('themeProgressBtn');
+        const themeLabel = document.getElementById('themeLabel');
+        const backArrow = document.querySelector('.btn-back-arrow');
+        const introSection = document.getElementById('introSection');
+        const scrollIndicator = document.getElementById('scrollIndicator');
+        const goBackBtn = document.getElementById('goBackBtn'); 
+        const scrollWrapper = document.getElementById('scrollWrapper');
+        const selectionSection = document.getElementById('selectionSection');
+        const canvas = document.getElementById('tvNoiseCanvas');
+        const ctx = canvas.getContext('2d');
+        
+        const faceImg = document.getElementById('cyberFace');
+        const clipMask = document.getElementById('photoClipMask');
+        const photoFrame = document.getElementById('photoFrame');
+        const bioCard = document.getElementById('bioCard');
+        const scannerLine = document.getElementById('scannerLine');
+
+        let isMouseOverFace = false;
+        let isFocused = false; 
+
+        // CANVAS ENGINE
+        let canvasAnim;
+        function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        function renderNoise() {
+            const idata = ctx.createImageData(canvas.width, canvas.height);
+            const buffer32 = new Uint32Array(idata.data.buffer);
+            const len = buffer32.length;
+            const isDark = document.body.classList.contains('dark-mode');
+            for (let i = 0; i < len; i++) {
+                if (Math.random() > 0.15) {
+                    const noise = (Math.random() * 255) | 0;
+                    if (isDark) {
+                        const r = (noise * 0.22) | 0; const g = (noise * 0.12) | 0; const b = (noise * 0.25) | 0;
+                        buffer32[i] = (255 << 24) | (b << 16) | (g << 8) | r;
+                    } else {
+                        buffer32[i] = (255 << 24) | (noise << 16) | (noise << 8) | noise;
+                    }
+                }
+            }
+            ctx.putImageData(idata, 0, 0);
+            canvasAnim = requestAnimationFrame(renderNoise);
+        }
+
+        // OMBRE E ROTAZIONI DINAMICHE
+        window.addEventListener('mousemove', (e) => {
+            vinyl.style.left = e.clientX + 'px';
+            vinyl.style.top = e.clientY + 'px';
+
+            if (isFocused) return; 
+
+            if (window.innerWidth > 768 && clipMask && faceImg) {
+                const rect = clipMask.getBoundingClientRect();
+                
+                isMouseOverFace = (
+                    e.clientX >= rect.left && e.clientX <= rect.right && 
+                    e.clientY >= rect.top && e.clientY <= rect.bottom
+                );
+
+                if (isMouseOverFace) {
+                    clipMask.style.transform = `rotateX(0deg) rotateY(0deg) translateZ(0px)`;
+                    
+                    const isDark = document.body.classList.contains('dark-mode');
+                    const defColor = isDark ? 'rgba(221, 160, 221, 0.35)' : 'rgba(18, 18, 18, 0.25)';
+                    if (photoFrame) {
+                        photoFrame.style.filter = `drop-shadow(0px 0px 45px ${defColor})`;
+                    }
+
+                    if (!clipMask.classList.contains('auto-glitch-active')) {
+                        faceImg.style.filter = "var(--face-hover-filter)";
+                        if (scannerLine) scannerLine.style.opacity = "0";
+                    }
+                } else {
+                    const faceCenterX = rect.left + rect.width / 2;
+                    const faceCenterY = rect.top + rect.height / 2;
+
+                    const deltaX = e.clientX - faceCenterX;
+                    const deltaY = e.clientY - faceCenterY;
+
+                    const maxRotation = 18; 
+                    const percentX = deltaX / window.innerWidth;
+                    const percentY = deltaY / window.innerHeight;
+
+                    const rotateY = percentX * maxRotation * 2;
+                    const rotateX = -percentY * maxRotation * 2;
+
+                    clipMask.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateZ(0px)`;
+
+                    const maxShadowOffset = 35; 
+                    const shadowX = -percentX * maxShadowOffset;
+                    const shadowY = -percentY * maxShadowOffset;
+                    
+                    const isDark = document.body.classList.contains('dark-mode');
+                    const shadowColor = isDark ? 'rgba(221, 160, 221, 0.4)' : 'rgba(18, 18, 18, 0.35)';
+                    
+                    if (photoFrame) {
+                        photoFrame.style.filter = `drop-shadow(${shadowX}px ${shadowY}px 60px ${shadowColor})`;
+                    }
+
+                    if (!clipMask.classList.contains('auto-glitch-active')) {
+                        faceImg.style.filter = "var(--face-filter)";
+                        if (scannerLine) scannerLine.style.opacity = "1";
+                    }
+                }
+            }
+        });
+
+        function triggerClickGlitch(callback) {
+            document.body.classList.add('theme-glitch-active');
+            canvas.style.opacity = "0.25";
+            renderNoise();
+            
+            setTimeout(() => {
+                document.body.classList.remove('theme-glitch-active');
+                canvas.style.opacity = "0";
+                cancelAnimationFrame(canvasAnim);
+                callback();
+            }, 300);
+        }
+
+        function disattivaFocus() {
+            if (!isFocused) return;
+            isFocused = false;
+            
+            document.body.classList.remove('focus-attivo');
+            document.body.classList.remove('photo-focus-attivo');
+            document.body.classList.remove('bio-focus-attivo');
+            
+            photoFrame.classList.remove('in-focus');
+            bioCard.classList.remove('in-focus');
+            
+            // Ripristina l'immagine originale testa.PNG a bassa risoluzione/glitchata
+            faceImg.src = "testa.PNG";
+            
+            const isDark = document.body.classList.contains('dark-mode');
+            const defColor = isDark ? 'rgba(221, 160, 221, 0.35)' : 'rgba(18, 18, 18, 0.25)';
+            photoFrame.style.filter = `drop-shadow(0px 0px 45px ${defColor})`;
+        }
+
+        photoFrame.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (currentScroll > 50 || window.innerWidth <= 768) return; 
+            
+            triggerClickGlitch(() => {
+                if (photoFrame.classList.contains('in-focus')) {
+                    disattivaFocus();
+                } else {
+                    disattivaFocus();
+                    isFocused = true;
+                    document.body.classList.add('focus-attivo');
+                    document.body.classList.add('photo-focus-attivo');
+                    photoFrame.classList.add('in-focus');
+                    
+                    // Mostra isaak.JPG quando la foto è aperta in primo piano
+                    faceImg.src = "isaak.JPG";
+                }
+            });
+        });
+
+        bioCard.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (currentScroll > 50 || window.innerWidth <= 768) return;
+            
+            triggerClickGlitch(() => {
+                if (bioCard.classList.contains('in-focus')) {
+                    disattivaFocus();
+                } else {
+                    disattivaFocus();
+                    isFocused = true;
+                    document.body.classList.add('focus-attivo');
+                    document.body.classList.add('bio-focus-attivo');
+                    bioCard.classList.add('in-focus');
+                }
+            });
+        });
+
+        window.addEventListener('click', () => {
+            if (isFocused) triggerClickGlitch(disattivaFocus);
+        });
+        
+        window.addEventListener('keydown', (e) => { 
+            if (e.key === 'Escape' && isFocused) {
+                triggerClickGlitch(disattivaFocus);
+            } 
+        });
+
+        // CICLO AUTOMATICO GLITCH FACCIALE
+        setInterval(() => {
+            if (isFocused) return; 
+            if (clipMask && faceImg && scannerLine) {
+                clipMask.classList.add('auto-glitch-active');
+                setTimeout(() => {
+                    clipMask.classList.remove('auto-glitch-active');
+                    if (isMouseOverFace) {
+                        faceImg.style.filter = "var(--face-hover-filter)";
+                        scannerLine.style.opacity = "0";
+                    } else {
+                        faceImg.style.filter = "var(--face-filter)";
+                        scannerLine.style.opacity = "1";
+                    }
+                }, 450);
+            }
+        }, 7000);
+
+        document.addEventListener('mouseleave', () => {
+            if (isFocused) return;
+            isMouseOverFace = false;
+            if (!clipMask.classList.contains('auto-glitch-active')) {
+                if (clipMask) clipMask.style.transform = `rotateX(0deg) rotateY(0deg)`;
+                if (faceImg) faceImg.style.filter = "var(--face-filter)";
+                if (scannerLine) scannerLine.style.opacity = "1";
+                if (photoFrame) {
+                    const isDark = document.body.classList.contains('dark-mode');
+                    const defColor = isDark ? 'rgba(221, 160, 221, 0.35)' : 'rgba(18, 18, 18, 0.25)';
+                    photoFrame.style.filter = `drop-shadow(0px 0px 45px ${defColor})`;
+                }
+            }
+        });
+
+        const interactives = [themeProgressBtn, backArrow, scrollIndicator, goBackBtn];
+        interactives.forEach(el => {
+            if (el) {
+                el.addEventListener('mouseenter', () => vinyl.classList.add('on-progress'));
+                el.addEventListener('mouseleave', () => vinyl.classList.remove('on-progress'));
+            }
+        });
+
+        // LERP SCROLL ENGINE
+        let currentScroll = 0;
+        let targetScroll = 0;
+        let targetHeight = window.innerHeight;
+        const easeFactor = 0.035; 
+
+        function applyScrollEffects(scrollPos) {
+            if (window.innerWidth <= 768) return; 
+
+            const progress = scrollPos / targetHeight;
+            scrollWrapper.style.transform = `translateY(${-scrollPos}px)`;
+
+            let easeOutProgress = 1 - Math.pow(1 - progress, 2); 
+            let easeInProgress = Math.pow(progress, 2);
+
+            introSection.style.opacity = 1 - easeOutProgress;
+            selectionSection.style.opacity = easeInProgress;
+
+            const introY = progress * -150; 
+            introSection.style.transform = `translateY(${introY}px)`;
+            
+            if (progress > 0.1) {
+                scrollIndicator.style.opacity = 0;
+                scrollIndicator.style.pointerEvents = 'none';
+                disattivaFocus(); 
+            } else {
+                scrollIndicator.style.opacity = 0.5;
+                scrollIndicator.style.pointerEvents = 'auto';
+            }
+
+            if (progress > 0.9) {
+                goBackBtn.style.opacity = 0.5;
+                goBackBtn.style.pointerEvents = 'auto';
+            } else {
+                goBackBtn.style.opacity = 0;
+                goBackBtn.style.pointerEvents = 'none';
+            }
+        }
+
+        function smoothScrollLoop() {
+            if (window.innerWidth > 768) {
+                currentScroll += (targetScroll - currentScroll) * easeFactor;
+                if (Math.abs(targetScroll - currentScroll) < 0.1) {
+                    currentScroll = targetScroll;
+                }
+                applyScrollEffects(currentScroll);
+            }
+            requestAnimationFrame(smoothScrollLoop);
+        }
+        requestAnimationFrame(smoothScrollLoop);
+
+        window.addEventListener('wheel', (e) => {
+            if (window.innerWidth <= 768 || isFocused) return; 
+            targetScroll += e.deltaY;
+            targetScroll = Math.max(0, Math.min(targetHeight, targetScroll));
+        }, { passive: false });
+
+        scrollIndicator.addEventListener('click', () => {
+            if (window.innerWidth > 768) { targetScroll = targetHeight; } 
+            else { selectionSection.scrollIntoView({ behavior: 'smooth' }); }
+        });
+
+        goBackBtn.addEventListener('click', () => {
+            if (window.innerWidth > 768) { targetScroll = 0; } 
+            else { introSection.scrollIntoView({ behavior: 'smooth' }); }
+        });
+
+        document.querySelectorAll('.split-side, .btn-back-arrow').forEach(el => {
+            el.addEventListener('click', function(e) {
+                if (this.getAttribute('href') && this.getAttribute('target') !== '_blank') {
+                    e.preventDefault();
+                    const destinazione = this.getAttribute('href');
+                    vinyl.classList.remove('spin');
+                    void vinyl.offsetWidth; 
+                    vinyl.classList.add('spin');
+                    setTimeout(() => {
+                        canvas.style.opacity = "0.2";
+                        renderNoise();
+                        document.body.classList.add('glitch-active');
+                        setTimeout(() => { window.location.href = destinazione; }, 400);
+                    }, 200);
+                }
+            });
+        });
+
+        function updateLabel(isDark) { themeLabel.textContent = isDark ? 'dark' : 'light'; }
+
+        function checkSavedTheme() {
+            const currentTheme = localStorage.getItem('theme');
+            if (currentTheme === 'dark') {
+                document.body.classList.add('dark-mode');
+                updateLabel(true);
+            } else {
+                updateLabel(false);
+            }
+        }
+
+        function toggleDarkMode() {
+            if (document.body.classList.contains('theme-glitch-active') || document.body.classList.contains('glitch-active')) return;
+            document.body.classList.add('theme-glitch-active');
+            setTimeout(() => {
+                document.body.classList.toggle('dark-mode');
+                const isDark = document.body.classList.contains('dark-mode');
+                localStorage.setItem('theme', isDark ? 'dark' : 'light');
+                updateLabel(isDark);
+            }, 180);
+            setTimeout(() => { document.body.classList.remove('theme-glitch-active'); }, 300);
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            checkSavedTheme();
+            if (window.innerWidth > 768) {
+                selectionSection.style.opacity = 0; 
+                applyScrollEffects(0); 
+            }
+        });
+    </script>
+</body>
+</html>
