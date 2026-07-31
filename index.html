@@ -2,7 +2,7 @@
 <html lang="it">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Isaak - Home</title>
     <style>
         @font-face {
@@ -38,7 +38,7 @@
             text-align: center;
             transition: background 0.5s ease;
             position: relative;
-            overflow-x: hidden;
+            overflow: hidden;
             cursor: none !important;
         }
 
@@ -57,27 +57,13 @@
             --scanline-color: rgba(221, 160, 221, 0.09);
         }
 
-        /* WRAPPER STRUTTURALE PER MOBILI */
-        .page-wrapper {
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            align-items: center;
-            min-height: 100vh;
-            width: 100%;
-            box-sizing: border-box;
-            padding: 120px 20px 140px 20px;
-            position: relative;
-            z-index: 10;
-        }
-
-        /* CANVAS DELLA NEVE TV */
+        /* CANVAS DELLA NEVE TV - FIX ZOOM E OVERFLOW */
         #tvNoiseCanvas {
-            position: absolute;
+            position: fixed;
             top: 0;
             left: 0;
-            width: 100%;
-            height: 100%;
+            width: 100vw;
+            height: 100vh;
             z-index: 2; 
             pointer-events: none;
             mix-blend-mode: hard-light; 
@@ -86,10 +72,14 @@
             will-change: transform, opacity;
         }
 
+        /* TEXTURE RETRO-DIGITALE (Scanlines) - FIX ZOOM E OVERFLOW */
         body::before {
             content: "";
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
+            position: fixed;
+            top: 0; 
+            left: 0; 
+            width: 100vw; 
+            height: 100vh;
             background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.04) 50%);
             background-size: 100% 4px;
             z-index: 3;
@@ -130,7 +120,6 @@
             padding: 55px 85px;
             transition: transform 0.1s linear; 
             will-change: transform;
-            margin: auto 0;
         }
 
         .theme-progress-container, .social-footer, .site-bar {
@@ -428,107 +417,16 @@
             pointer-events: none;
         }
 
-        /* MEDIA QUERIES PER SMARTPHONE E TABLET (NON INTACCA IL PC) */
-        @media (max-width: 1024px) {
-            body {
-                overflow-y: auto;
-                cursor: default !important;
-            }
-
-            .page-wrapper {
-                justify-content: flex-start;
-                gap: 40px;
-                padding: 100px 15px 40px 15px;
-            }
-
-            .theme-progress-container {
-                position: relative;
-                top: 0;
-                left: 0;
-                transform: none;
-                margin-bottom: 20px;
-            }
-
-            .titolo-principale-link { 
-                font-size: 3.5rem; 
-                letter-spacing: 3px;
-                -webkit-box-reflect: none; 
-                box-reflect: none;
-                word-wrap: break-word;
-            }
-
-            .titolo-container { 
-                padding: 20px 30px; 
-                transform: none !important; 
-                margin: 0 auto;
-                width: 100%;
-                box-sizing: border-box;
-            }
-
-            .squircle-svg {
-                display: none;
-            }
-
-            .logo-sfondo-container { 
-                position: fixed;
-                width: 100%;
-                height: 100%;
-                clip-path: none !important; 
-                -webkit-clip-path: none !important; 
-                filter: none !important; 
-                overflow: hidden;
-            }
-
-            .logo-personalizzato-bg { 
-                width: 90vw; 
-                height: 90vh; 
-                transform: none;
-                opacity: 0.08;
-            }
-
-            .social-footer { 
-                position: relative;
-                bottom: 0;
-                margin-top: auto;
-                margin-bottom: 20px;
-                gap: 40px;
-            }
-
-            .site-bar { 
-                position: relative;
-                bottom: 0;
-                padding: 10px 0; 
-                font-size: 0.65rem; 
-                opacity: 0.5;
-            }
-
-            .licenza-text { 
-                font-size: 0.6rem; 
-                max-width: 100%; 
-            }
-
-            .vinyl-cursor { 
-                display: none !important; 
-            }
-
-            body, a, button, .titolo-principale-link, .social-link { 
-                cursor: pointer !important; 
-            }
-        }
-
-        /* SPECIFICO PER MODALITÀ ORIZZONTALE (LANDSCAPE) SU MOBILE */
-        @media (max-width: 1024px) and (orientation: landscape) {
-            .page-wrapper {
-                padding-top: 60px;
-                gap: 30px;
-            }
-            .titolo-principale-link {
-                font-size: 3rem;
-            }
-            .logo-personalizzato-bg {
-                width: 50vw;
-                height: 50vh;
-            }
+        @media (max-width: 768px) {
+            .titolo-principale-link { font-size: 3.8rem; -webkit-box-reflect: below -12px linear-gradient(transparent 50%, rgba(255, 255, 255, 0.2)); }
+            .titolo-container { padding: 25px 45px; transform: none !important; }
+            .logo-personalizzato-bg { width: 150vw; height: 100vh; }
+            .logo-sfondo-container { clip-path: none !important; -webkit-clip-path: none !important; filter: none !important; }
+            .social-footer { bottom: 110px; }
+            .site-bar { padding: 10px; font-size: 0.65rem; }
+            .licenza-text { font-size: 0.6rem; max-width: 90%; }
+            .vinyl-cursor { display: none !important; }
+            body, a, button, .titolo-principale-link, .social-link { cursor: pointer !important; }
         }
     </style>
 </head>
@@ -548,6 +446,7 @@
     </svg>
 
     <canvas id="tvNoiseCanvas"></canvas>
+
     <div class="glitch-overlay" id="glitchOverlay"></div>
     <div class="vinyl-cursor" id="vinylCursor"></div>
 
@@ -555,54 +454,49 @@
         <img src="logo.PNG" alt="Isaak Big Logo" class="logo-personalizzato-bg" id="bigLogo">
     </div>
 
-    <!-- WRAPPER DI CONTENIMENTO RESPONSIVO -->
-    <div class="page-wrapper">
-        
-        <button class="theme-progress-container" id="themeProgressBtn" onclick="toggleDarkMode()" aria-label="Cambia modalità tema">
-            <div class="progress-bar">
-                <div class="progress-chunk" id="chunk-1"></div>
-                <div class="progress-chunk" id="chunk-2"></div>
-                <div class="progress-chunk" id="chunk-3"></div>
-                <div class="progress-chunk" id="chunk-4"></div>
-                <div class="progress-chunk" id="chunk-5"></div>
-            </div>
-            <div class="theme-label" id="themeLabel">light</div>
-        </button>
-
-        <div class="titolo-container" id="mainTitleContainer">
-            <svg class="squircle-svg" xmlns="http://www.w3.org/2000/svg">
-                <rect class="squircle-glow" x="1" y="1" width="calc(100% - 2px)" height="calc(100% - 2px)" rx="36" ry="36" pathLength="1200" />
-            </svg>
-            <a href="hub.html" id="mainTitleLink" class="titolo-principale-link">isaaks portfolio</a>
+    <button class="theme-progress-container" id="themeProgressBtn" onclick="toggleDarkMode()" aria-label="Cambia modalità tema">
+        <div class="progress-bar">
+            <div class="progress-chunk" id="chunk-1"></div>
+            <div class="progress-chunk" id="chunk-2"></div>
+            <div class="progress-chunk" id="chunk-3"></div>
+            <div class="progress-chunk" id="chunk-4"></div>
+            <div class="progress-chunk" id="chunk-5"></div>
         </div>
-        
-        <div class="social-footer">
-            <a href="https://www.instagram.com/isaak.did.it?igsh=MXR3am9lMDllcjhzbA%3D%3D&utm_source=qr" target="_blank" rel="noopener noreferrer" class="social-link" aria-label="Instagram">
-                <svg viewBox="0 0 24 24" class="social-icon">
-                    <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204 0.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.051.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/>
-                </svg>
-            </a>
-            <a href="https://open.spotify.com/artist/47U7DbLH6o2vPyTumv5KD7?si=sXiSLwScTCWdbxAzCW3Nqg&utm_source=copy-link" target="_blank" rel="noopener noreferrer" class="social-link" aria-label="Spotify">
-                <svg viewBox="0 0 24 24" class="social-icon">
-                    <path d="M12 0C5.373 0 0 5.372 0 12s5.373 12 12 12 12-5.372 12-12S18.627 0 12 0zm5.494 17.307c-.217.356-.684.469-1.04.252-2.875-1.758-6.495-2.156-10.757-1.18-.406.092-.814-.162-.907-.568-.093-.406.162-.814.569-.907 4.658-1.066 8.64-.616 11.884 1.37.356.218.47.684.252 1.04zm1.467-3.258c-.273.443-.853.587-1.294.315-3.29-2.022-8.306-2.607-12.196-1.426-.497.15-1.023-.13-1.173-.627-.15-.496.13-1.022.626-1.172 4.45-1.35 9.976-.693 13.723 1.613.442.272.585.852.314 1.297zm.126-3.39C15.183 8.3 8.746 8.086 5.016 9.218c-.59.18-1.22-.152-1.4-.743-.18-.59.153-1.22.743-1.4 4.285-1.3 11.41-1.055 16.1 1.73.53.315.706.997.39 1.53-.314.53-.996.704-1.528.39z"/>
-                </svg>
-            </a>
-            <a href="mailto:isaakmusic7@gmail.com" class="social-link" aria-label="Email">
-                <svg viewBox="0 0 24 24" class="social-icon">
-                    <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
-                </svg>
-            </a>
-        </div>
+        <div class="theme-label" id="themeLabel">light</div>
+    </button>
 
-        <footer class="site-bar">
-            <div>© 2026 isaak. all rights reserved.</div>
-            <div class="licenza-text">
-                all beats are property of isaak. tracks are published under creative commons license (cc by-nc-nd 4.0). 
-                streaming and listening only. unauthorized download, redistribution, or commercial use is strictly prohibited.
-            </div>
-        </footer>
-
+    <div class="titolo-container" id="mainTitleContainer">
+        <svg class="squircle-svg" xmlns="http://www.w3.org/2000/svg">
+            <rect class="squircle-glow" x="1" y="1" width="calc(100% - 2px)" height="calc(100% - 2px)" rx="36" ry="36" pathLength="1200" />
+        </svg>
+        <a href="hub.html" id="mainTitleLink" class="titolo-principale-link">isaaks portfolio</a>
     </div>
+    
+    <div class="social-footer">
+        <a href="https://www.instagram.com/isaak.did.it?igsh=MXR3am9lMDllcjhzbA%3D%3D&utm_source=qr" target="_blank" rel="noopener noreferrer" class="social-link" aria-label="Instagram">
+            <svg viewBox="0 0 24 24" class="social-icon">
+                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204 0.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.051.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/>
+            </svg>
+        </a>
+        <a href="https://open.spotify.com/artist/47U7DbLH6o2vPyTumv5KD7?si=sXiSLwScTCWdbxAzCW3Nqg&utm_source=copy-link" target="_blank" rel="noopener noreferrer" class="social-link" aria-label="Spotify">
+            <svg viewBox="0 0 24 24" class="social-icon">
+                <path d="M12 0C5.373 0 0 5.372 0 12s5.373 12 12 12 12-5.372 12-12S18.627 0 12 0zm5.494 17.307c-.217.356-.684.469-1.04.252-2.875-1.758-6.495-2.156-10.757-1.18-.406.092-.814-.162-.907-.568-.093-.406.162-.814.569-.907 4.658-1.066 8.64-.616 11.884 1.37.356.218.47.684.252 1.04zm1.467-3.258c-.273.443-.853.587-1.294.315-3.29-2.022-8.306-2.607-12.196-1.426-.497.15-1.023-.13-1.173-.627-.15-.496.13-1.022.626-1.172 4.45-1.35 9.976-.693 13.723 1.613.442.272.585.852.314 1.297zm.126-3.39C15.183 8.3 8.746 8.086 5.016 9.218c-.59.18-1.22-.152-1.4-.743-.18-.59.153-1.22.743-1.4 4.285-1.3 11.41-1.055 16.1 1.73.53.315.706.997.39 1.53-.314.53-.996.704-1.528.39z"/>
+            </svg>
+        </a>
+        <a href="mailto:isaakmusic7@gmail.com" class="social-link" aria-label="Email">
+            <svg viewBox="0 0 24 24" class="social-icon">
+                <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+            </svg>
+        </a>
+    </div>
+
+    <footer class="site-bar">
+        <div>© 2026 isaak. all rights reserved.</div>
+        <div class="licenza-text">
+            all beats are property of isaak. tracks are published under creative commons license (cc by-nc-nd 4.0). 
+            streaming and listening only. unauthorized download, redistribution, or commercial use is strictly prohibited.
+        </div>
+    </footer>
 
     <script>
         const canvas = document.getElementById('tvNoiseCanvas');
@@ -629,12 +523,10 @@
         
         let isTitleGlitch = false;
 
+        // Ricalcola il canvas basandosi sulle dimensioni reali della finestra per evitare glitch da zoom
         function resizeCanvas() {
-            // Impedisce che il canvas si distorca o si allarghi durante lo zoom su mobile
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
-            canvas.style.width = window.innerWidth + 'px';
-            canvas.style.height = window.innerHeight + 'px';
         }
         window.addEventListener('resize', resizeCanvas);
         resizeCanvas();
@@ -722,82 +614,81 @@
         }
 
         function updatePositions() {
-            if (window.innerWidth > 1024) {
+            if (window.innerWidth > 768) {
                 currentX += (targetX - currentX) * 0.1;
                 currentY += (targetY - currentY) * 0.1;
                 mainTitleContainer.style.transform = `translate(${currentX}px, ${currentY}px)`;
-                
-                bubbleX += (targetBubbleX - bubbleX) * 0.25;
-                bubbleY += (targetBubbleY - bubbleY) * 0.25;
-                
-                let vx = bubbleX - lastBubbleX;
-                let vy = bubbleY - lastBubbleY;
-                
-                lastBubbleX = bubbleX;
-                lastBubbleY = bubbleY;
-                
-                let speed = Math.sqrt(vx * vx + vy * vy);
-                
-                let targetAngle = bubbleRotation; 
-                if (speed > 0.1) {
-                    targetAngle = Math.atan2(vy, vx) * 180 / Math.PI;
-                }
-                
-                let stretchIntensity = Math.min(speed * 0.001, 0.22); 
-                let targetScaleX = 1 + stretchIntensity;
-                let targetScaleY = 1 / targetScaleX; 
-                
-                if (targetBubbleX === -1000) {
-                    targetAngle = bubbleRotation; 
-                    targetScaleX = 1;
-                    targetScaleY = 1;
-                }
-                
-                bubbleRotation += (targetAngle - bubbleRotation) * 0.2;
-                bubbleScaleX += (targetScaleX - bubbleScaleX) * 0.2;
-                bubbleScaleY += (targetScaleY - bubbleScaleY) * 0.2;
-                
-                bubblyPath.setAttribute('transform', 
-                    `translate(${bubbleX}, ${bubbleY}) ` +
-                    `rotate(${bubbleRotation}) ` +
-                    `scale(${bubbleScaleX}, ${bubbleScaleY})`
-                );
             }
+
+            bubbleX += (targetBubbleX - bubbleX) * 0.25;
+            bubbleY += (targetBubbleY - bubbleY) * 0.25;
+            
+            let vx = bubbleX - lastBubbleX;
+            let vy = bubbleY - lastBubbleY;
+            
+            lastBubbleX = bubbleX;
+            lastBubbleY = bubbleY;
+            
+            let speed = Math.sqrt(vx * vx + vy * vy);
+            
+            let targetAngle = bubbleRotation; 
+            if (speed > 0.1) {
+                targetAngle = Math.atan2(vy, vx) * 180 / Math.PI;
+            }
+            
+            let stretchIntensity = Math.min(speed * 0.001, 0.22); 
+            let targetScaleX = 1 + stretchIntensity;
+            let targetScaleY = 1 / targetScaleX; 
+            
+            if (targetBubbleX === -1000) {
+                targetAngle = bubbleRotation; 
+                targetScaleX = 1;
+                targetScaleY = 1;
+            }
+            
+            bubbleRotation += (targetAngle - bubbleRotation) * 0.2;
+            bubbleScaleX += (targetScaleX - bubbleScaleX) * 0.2;
+            bubbleScaleY += (targetScaleY - bubbleScaleY) * 0.2;
+            
+            bubblyPath.setAttribute('transform', 
+                `translate(${bubbleX}, ${bubbleY}) ` +
+                `rotate(${bubbleRotation}) ` +
+                `scale(${bubbleScaleX}, ${bubbleScaleY})`
+            );
 
             requestAnimationFrame(updatePositions);
         }
         requestAnimationFrame(updatePositions);
 
         window.addEventListener('mousemove', (e) => {
-            if (window.innerWidth <= 1024) return; // Disattiva tracciamento mouse su mobile
-
             vinyl.style.left = e.clientX + 'px';
             vinyl.style.top = e.clientY + 'px';
 
             targetBubbleX = e.clientX;
             targetBubbleY = e.clientY;
 
-            const rect = mainTitleContainer.getBoundingClientRect();
-            const titleCenterX = rect.left + rect.width / 2 - currentX;
-            const titleCenterY = rect.top + rect.height / 2 - currentY;
+            if (window.innerWidth > 768) {
+                const rect = mainTitleContainer.getBoundingClientRect();
+                const titleCenterX = rect.left + rect.width / 2 - currentX;
+                const titleCenterY = rect.top + rect.height / 2 - currentY;
 
-            const deltaX = e.clientX - titleCenterX;
-            const deltaY = e.clientY - titleCenterY;
-            const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
-            const activationRadius = 500;
+                const deltaX = e.clientX - titleCenterX;
+                const deltaY = e.clientY - titleCenterY;
+                const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+                const activationRadius = 500;
 
-            if (distance < activationRadius) {
-                const intensity = (1 - (distance / activationRadius)); 
-                targetX = deltaX * 0.12 * intensity; 
-                targetY = deltaY * 0.12 * intensity; 
-            } else {
-                targetX = 0;
-                targetY = 0;
+                if (distance < activationRadius) {
+                    const intensity = (1 - (distance / activationRadius)); 
+                    targetX = deltaX * 0.12 * intensity; 
+                    targetY = deltaY * 0.12 * intensity; 
+                } else {
+                    targetX = 0;
+                    targetY = 0;
+                }
             }
         });
 
         window.addEventListener('mouseleave', () => {
-            if (window.innerWidth <= 1024) return;
             targetX = 0;
             targetY = 0;
             targetBubbleX = -1000;
@@ -806,16 +697,11 @@
         });
         
         window.addEventListener('mouseenter', () => {
-            if (window.innerWidth <= 1024) return;
             document.getElementById('bigLogo').style.opacity = '0.18';
         });
 
-        themeProgressBtn.addEventListener('mouseenter', () => {
-            if (window.innerWidth > 1024) vinyl.classList.add('on-progress');
-        });
-        themeProgressBtn.addEventListener('mouseleave', () => {
-            if (window.innerWidth > 1024) vinyl.classList.remove('on-progress');
-        });
+        themeProgressBtn.addEventListener('mouseenter', () => vinyl.classList.add('on-progress'));
+        themeProgressBtn.addEventListener('mouseleave', () => vinyl.classList.remove('on-progress'));
 
         document.querySelectorAll('a, button, .titolo-principale-link').forEach(el => {
             el.addEventListener('click', function(e) {
@@ -823,7 +709,7 @@
                     e.preventDefault();
                     const destinazione = this.getAttribute('href');
                     
-                    if(window.innerWidth > 1024 && !vinyl.classList.contains('on-progress')) {
+                    if(!vinyl.classList.contains('on-progress')) {
                         vinyl.classList.remove('spin');
                         void vinyl.offsetWidth;
                         vinyl.classList.add('spin');
@@ -835,7 +721,7 @@
                         canvas.style.opacity = "0.55"; 
 
                         setTimeout(() => { window.location.href = destinazione; }, 450);
-                    }, window.innerWidth > 1024 ? 300 : 50);
+                    }, 300);
                 }
             });
         });
