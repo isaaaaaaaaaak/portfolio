@@ -280,6 +280,7 @@
                         border-color 0.4s ease,
                         opacity 0.3s ease;
             box-sizing: border-box;
+            height: 220px; /* Altezza fissa stagna del box traccia per bloccare la griglia */
         }
 
         body.dark-mode .traccia {
@@ -301,17 +302,20 @@
 
         .traccia-titolo {
             font-family: 'Undertown', sans-serif;
-            font-size: 2.4rem; 
+            font-size: 2rem; 
             color: var(--color-text);
             margin: 0 0 20px 0;
             text-transform: lowercase;
             text-align: center; 
             transition: color 0.5s ease;
             min-height: 80px;
+            max-height: 80px;
+            overflow: hidden;
             display: flex;
             align-items: center;
             justify-content: center;
             width: 100%;
+            word-break: break-word;
         }
 
         .play-track-btn {
@@ -512,11 +516,16 @@
             filter: invert(1) hue-rotate(180deg);
         }
 
+        /* FIX RIMOZIONE TRE PUNTINI E PANNELLO OVERFLOW VELOCITA' */
+        audio::-webkit-media-controls-playback-speed-button,
+        audio::-webkit-media-controls-overflow-button {
+            display: none !important;
+        }
         audio::-webkit-media-controls-enclosure {
             overflow: hidden !important;
         }
         audio::-webkit-media-controls-panel {
-            width: calc(100% + 30px); 
+            width: 100%; 
         }
 
         /* DESTRA: COLONNA PITCH */
@@ -677,12 +686,12 @@
             }
             .player-left-socials {
                 justify-content: center;
-                order: 3; /* Invertito: ora va in fondo */
+                order: 3; 
             }
             .player-center-core {
                 order: 1;
                 width: 100%;
-                min-width: 0; /* Previene l'espansione dovuta a titoli lunghi */
+                min-width: 0; 
             }
             .player-info-meta {
                 width: 100%;
@@ -697,7 +706,7 @@
             }
             .pitch-container {
                 align-items: center;
-                order: 2; /* Invertito: ora va in mezzo */
+                order: 2; 
             }
             .pagination-container {
                 margin-bottom: 240px;
@@ -741,7 +750,7 @@
                 align-items: flex-end !important;
             }
             .pitch-container > span {
-                display: none !important; /* Rimuove il testo fisso per risparmiare spazio in altezza */
+                display: none !important; 
             }
             .pagination-container {
                 margin-bottom: 100px !important;
@@ -755,7 +764,8 @@
             .titolo-sezione { font-size: 2.6rem; margin-top: 100px; margin-bottom: 40px; }
             .vinyl-cursor { display: none !important; }
             body, a, button, .page-btn, .btn-back-arrow, .play-track-btn, .pitch-slider-input, .player-social-link { cursor: pointer !important; }
-            .traccia-titolo { min-height: auto; }
+            .traccia { height: auto; min-height: 180px; }
+            .traccia-titolo { min-height: auto; max-height: none; }
         }
     </style>
 </head>
