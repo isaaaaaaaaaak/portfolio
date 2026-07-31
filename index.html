@@ -430,10 +430,14 @@
 
         /* STRUTTURA RESPONSIVE SMARTPHONE/TABLET */
         @media (max-width: 768px) {
-            body {
+            html, body {
                 overflow-x: hidden;
-                overflow-y: auto;
                 width: 100%;
+                max-width: 100%;
+            }
+            body {
+                overflow-y: auto;
+                position: relative;
             }
             .titolo-container { 
                 padding: 20px 15px; 
@@ -451,10 +455,29 @@
                 max-width: 100%;
                 margin: 0 auto;
             }
-            .squircle-svg { display: none; } /* Rimuove il rettangolo neon che forzava l'overflow su schermi stretti */
+            .squircle-svg { display: none; } 
             
-            .logo-personalizzato-bg { width: 150vw; height: 100vh; }
-            .logo-sfondo-container { clip-path: none !important; -webkit-clip-path: none !important; filter: none !important; }
+            .logo-sfondo-container { 
+                clip-path: none !important; 
+                -webkit-clip-path: none !important; 
+                filter: none !important; 
+                width: 100%;
+                height: 100%;
+                overflow: hidden;
+                top: 0;
+                left: 0;
+            }
+            .logo-personalizzato-bg { 
+                width: 100vw; 
+                height: 100vh; 
+                object-fit: cover;
+                opacity: 0.15;
+                transform: none; 
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+            }
             .social-footer { bottom: 105px; gap: 25px; }
             .site-bar { padding: 10px; font-size: 0.65rem; position: absolute; }
             .licenza-text { font-size: 0.6rem; max-width: 95%; }
@@ -464,6 +487,10 @@
 
         /* EMERGENZA FIX PER STRUTTURA IN ORIZZONTALE (LANDSCAPE MOBILE) */
         @media (max-width: 900px) and (orientation: landscape) {
+            html, body {
+                overflow-x: hidden;
+                width: 100%;
+            }
             body {
                 justify-content: center;
                 min-height: 100vh;
@@ -479,13 +506,21 @@
             }
             .titolo-principale-link {
                 font-size: 2.8rem;
-                -webkit-box-reflect: none; /* Rimuove il riflesso in orizzontale per salvare spazio */
+                -webkit-box-reflect: none; 
+            }
+            .logo-personalizzato-bg {
+                width: 100vw;
+                height: 100vh;
+                object-fit: cover;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
             }
             .social-footer {
                 position: relative;
                 bottom: auto;
                 margin-top: 25px;
-                margin-bottom: 70px; /* Previene la collisione con il footer */
+                margin-bottom: 30px; 
             }
             .site-bar {
                 position: relative;
