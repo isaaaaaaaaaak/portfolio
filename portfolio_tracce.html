@@ -90,7 +90,7 @@
             display: block;
             position: absolute;
             top: 0; left: 0; bottom: 0; right: 0;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.05) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.01), rgba(0, 255, 0, 0.005), rgba(0, 0, 255, 0.01));
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.05) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.01), rgba(0, 255, 0, 0.005), rgba(0, 255, 0, 0.01));
             z-index: 2;
             background-size: 100% 4px, 6px 100%;
             pointer-events: none;
@@ -668,6 +668,7 @@
             100% { background-position: 0 50px; }
         }
 
+        /* MEDIA QUERIES MODIFICATE PER SMARTPHONE E TABLET */
         @media (max-width: 900px) {
             .bottom-audio-player {
                 grid-template-columns: 1fr;
@@ -676,17 +677,74 @@
             }
             .player-left-socials {
                 justify-content: center;
-                order: 2;
+                order: 3; /* Invertito: ora va in fondo */
             }
             .player-center-core {
                 order: 1;
+                width: 100%;
+                min-width: 0; /* Previene l'espansione dovuta a titoli lunghi */
+            }
+            .player-info-meta {
+                width: 100%;
+                min-width: 0;
+            }
+            .player-controls-wrapper {
+                width: 100%;
+            }
+            .player-controls-wrapper audio {
+                width: 100%;
+                max-width: 100%;
             }
             .pitch-container {
                 align-items: center;
-                order: 3;
+                order: 2; /* Invertito: ora va in mezzo */
             }
             .pagination-container {
                 margin-bottom: 240px;
+            }
+        }
+
+        /* MEDIA QUERY DEDICATA PER TELEFONO IN ORIZZONTALE (LANDSCAPE) */
+        @media (max-width: 950px) and (orientation: landscape) {
+            .bottom-audio-player {
+                grid-template-columns: auto 1fr auto !important;
+                gap: 15px !important;
+                padding: 8px 25px !important;
+            }
+            .player-left-socials {
+                order: 1 !important;
+                justify-content: flex-start !important;
+                gap: 12px !important;
+            }
+            .player-social-icon {
+                width: 22px !important;
+                height: 22px !important;
+            }
+            .player-center-core {
+                order: 2 !important;
+                flex-direction: row !important;
+                gap: 15px !important;
+                justify-content: center !important;
+            }
+            .player-info-meta {
+                max-width: 160px !important;
+            }
+            .player-info-meta .current-track-title {
+                font-size: 1.1rem !important;
+                text-align: left !important;
+            }
+            .player-controls-wrapper audio {
+                height: 32px !important;
+            }
+            .pitch-container {
+                order: 3 !important;
+                align-items: flex-end !important;
+            }
+            .pitch-container > span {
+                display: none !important; /* Rimuove il testo fisso per risparmiare spazio in altezza */
+            }
+            .pagination-container {
+                margin-bottom: 100px !important;
             }
         }
 
