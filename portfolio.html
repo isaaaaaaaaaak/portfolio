@@ -280,6 +280,7 @@
                         border-color 0.4s ease,
                         opacity 0.3s ease;
             box-sizing: border-box;
+            height: 220px; /* Altezza fissa stagna del box traccia per bloccare la griglia */
         }
 
         body.dark-mode .traccia {
@@ -301,17 +302,20 @@
 
         .traccia-titolo {
             font-family: 'Undertown', sans-serif;
-            font-size: 2.4rem; 
+            font-size: 2rem; 
             color: var(--color-text);
             margin: 0 0 20px 0;
             text-transform: lowercase;
             text-align: center; 
             transition: color 0.5s ease;
             min-height: 80px;
+            max-height: 80px;
+            overflow: hidden;
             display: flex;
             align-items: center;
             justify-content: center;
             width: 100%;
+            word-break: break-word;
         }
 
         .play-track-btn {
@@ -663,11 +667,16 @@
             filter: invert(1) hue-rotate(180deg);
         }
 
+        /* FIX RIMOZIONE TRE PUNTINI E PANNELLO OVERFLOW VELOCITA' */
+        audio::-webkit-media-controls-playback-speed-button,
+        audio::-webkit-media-controls-overflow-button {
+            display: none !important;
+        }
         audio::-webkit-media-controls-enclosure {
             overflow: hidden !important;
         }
         audio::-webkit-media-controls-panel {
-            width: calc(100% + 30px); 
+            width: 100%; 
         }
 
         .pitch-container {
@@ -828,12 +837,12 @@
             }
             .player-left-socials {
                 justify-content: center;
-                order: 3; /* Invertito: ora va in fondo */
+                order: 3; 
             }
             .player-center-core {
                 order: 1;
                 width: 100%;
-                min-width: 0; /* Impedisce che titoli lunghi allunghino il lettore */
+                min-width: 0; 
             }
             .player-info-meta {
                 width: 100%;
@@ -848,7 +857,7 @@
             }
             .pitch-container {
                 align-items: center;
-                order: 2; /* Invertito: ora va al centro */
+                order: 2; 
             }
             .pagination-container {
                 margin-bottom: 250px;
@@ -892,7 +901,7 @@
                 align-items: flex-end !important;
             }
             .pitch-container > span {
-                display: none !important; /* Salva spazio togliendo il testo */
+                display: none !important; 
             }
             .pagination-container {
                 margin-bottom: 100px !important;
@@ -906,7 +915,8 @@
             .titolo-sezione { font-size: 2.6rem; margin-top: 100px; margin-bottom: 40px; }
             .vinyl-cursor { display: none !important; }
             body, a, button, .page-btn, .btn-back-arrow, .play-track-btn, .pitch-slider-input, .player-social-link, .random-shuffle-btn, .loop-btn { cursor: pointer !important; }
-            .traccia-titolo { min-height: auto; }
+            .traccia { height: auto; min-height: 180px; }
+            .traccia-titolo { min-height: auto; max-height: none; }
             .interactive-row { flex-direction: row; align-items: center; width: 90%; }
             .daily-beat-container { padding: 8px 15px; }
             .daily-beat-title { max-width: 140px; }
@@ -1062,26 +1072,12 @@
             { nome: "one more night", url: "https://pub-4b347fb9f02f48879ae42ce3d3bd33d5.r2.dev/one%20more%20night.mp3" },
             { nome: "pre-post joint", url: "https://pub-4b347fb9f02f48879ae42ce3d3bd33d5.r2.dev/pre-post%20joint.mp3" },
             { nome: "purple saturday", url: "https://pub-4b347fb9f02f48879ae42ce3d3bd33d5.r2.dev/purple%20saturday.mp3" },
-            { nome: "reggae-ton", url: "https://pub-4b347fb9f02f48879ae42ce3d3bd33d5.r2.dev/reggae-ton.mp3" },
-            { nome: "rey", url: "https://pub-4b347fb9f02f48879ae42ce3d3bd33d5.r2.dev/rey.mp3" },
-            { nome: "rose", url: "https://pub-4b347fb9f02f48879ae42ce3d3bd33d5.r2.dev/rose.mp3" },
-            { nome: "sad bounce", url: "https://pub-4b347fb9f02f48879ae42ce3d3bd33d5.r2.dev/sad%20bounce.mp3" },
-            { nome: "shut up and then shut up again", url: "https://pub-4b347fb9f02f48879ae42ce3d3bd33d5.r2.dev/shut%20up%20and%20then%20shut%20up%20again.mp3" },
-            { nome: "slot", url: "https://pub-4b347fb9f02f48879ae42ce3d3bd33d5.r2.dev/slot.mp3" },
-            { nome: "sometimes i feel like i'm making it", url: "https://pub-4b347fb9f02f48879ae42ce3d3bd33d5.r2.dev/sometimes%20i%20feel%20like%20i'm%20making%20it.mp3" },
-            { nome: "space", url: "https://pub-4b347fb9f02f48879ae42ce3d3bd33d5.r2.dev/space.mp3" },
-            { nome: "steve harvey type beat", url: "https://pub-4b347fb9f02f48879ae42ce3d3bd33d5.r2.dev/steve%20harvey%20type%20beat.mp3" },
-            { nome: "street to school", url: "https://pub-4b347fb9f02f48879ae42ce3d3bd33d5.r2.dev/street%20to%20school.mp3" },
-            { nome: "tel aviv type beat", url: "https://pub-4b347fb9f02f48879ae42ce3d3bd33d5.r2.dev/tel%20aviv%20type%20beat.mp3" },
-            { nome: "trema", url: "https://pub-4b347fb9f02f48879ae42ce3d3bd33d5.r2.dev/trema.mp3" },
-            { nome: "turn off your device and listen", url: "https://pub-4b347fb9f02f48879ae42ce3d3bd33d5.r2.dev/turn%20off%20your%20device%20and%20listen.mp3" },
-            { nome: "what to do", url: "https://pub-4b347fb9f02f48879ae42ce3d3bd33d5.r2.dev/what%20to%20do.mp3" },
-            { nome: "yellow like brass", url: "https://pub-4b347fb9f02f48879ae42ce3d3bd33d5.r2.dev/yellow%20like%20brass.mp3" },
-            { nome: "zara vogue type shi", url: "https://pub-4b347fb9f02f48879ae42ce3d3bd33d5.r2.dev/zara%20vogue%20type%20shi.mp3" }
+            { nome: "reggae-ton", url: "https://pub-4b347fb9f02f48879ae42ce3d3bd33d5.r2.dev/reggae-ton.mp3" }
         ];
 
         const traccePerPagina = 6; 
         let paginaCorrente = 1;
+        let isLoopActive = false;
 
         const vinyl = document.getElementById('vinylCursor');
         const themeProgressBtn = document.getElementById('themeProgressBtn');
@@ -1095,9 +1091,6 @@
         
         const pitchSlider = document.getElementById('pitchSlider');
         const pitchValue = document.getElementById('pitchValue');
-
-        let tracciaDaily = null;
-        let loopAttivo = false;
 
         window.addEventListener('mousemove', (e) => {
             vinyl.style.left = e.clientX + 'px';
@@ -1126,11 +1119,6 @@
             el.addEventListener('mouseleave', () => vinyl.classList.remove('on-progress'));
         });
 
-        document.querySelectorAll('.random-shuffle-btn, .loop-btn').forEach(el => {
-            el.addEventListener('mouseenter', () => vinyl.classList.add('on-progress'));
-            el.addEventListener('mouseleave', () => vinyl.classList.remove('on-progress'));
-        });
-
         backBtn.addEventListener('click', function(e) {
             e.preventDefault();
             const destinazione = this.getAttribute('href');
@@ -1152,6 +1140,7 @@
         function applicaPitch() {
             const velocita = pitchSlider.value;
             pitchValue.textContent = parseFloat(velocita).toFixed(2) + 'x';
+            
             globalAudioPlayer.playbackRate = velocita;
             
             if ('preservesPitch' in globalAudioPlayer) {
@@ -1173,7 +1162,8 @@
             pitchSlider.value = 1;
             pitchValue.textContent = '1.00x';
             
-            globalAudioPlayer.loop = loopAttivo;
+            globalAudioPlayer.loop = isLoopActive;
+            
             globalAudioPlayer.play();
             bottomPlayer.classList.add('active');
             
@@ -1181,42 +1171,22 @@
             setTimeout(() => bottomPlayer.classList.remove('glitch-flash'), 400);
         }
 
-        function toggleLoop() {
-            loopAttivo = !loopAttivo;
-            globalAudioPlayer.loop = loopAttivo;
-            const btn = document.getElementById('loopBeatBtn');
-            if(loopAttivo) {
-                btn.classList.add('loop-active');
-            } else {
-                btn.classList.remove('loop-active');
-            }
-        }
-
         function riproduciBeatCasuale() {
-            if(listaTracce.length === 0) return;
-            const indice = Math.floor(Math.random() * listaTracce.length);
-            const traccia = listaTracce[indice];
-            suonaTraccia(traccia.nome, traccia.url);
+            if (listaTracce.length === 0) return;
+            const indiceCasuale = Math.floor(Math.random() * listaTracce.length);
+            const beatCasuale = listaTracce[indiceCasuale];
+            suonaTraccia(beatCasuale.nome, beatCasuale.url);
         }
 
-        function inizializzaDailyBeat() {
-            if (listaTracce.length === 0) return;
-            
-            const oggi = new Date();
-            const stringaData = oggi.getFullYear() + "-" + (oggi.getMonth() + 1) + "-" + oggi.getDate();
-            
-            let hash = 0;
-            for (let i = 0; i < stringaData.length; i++) {
-                hash = stringaData.charCodeAt(i) + ((hash << 5) - hash);
+        function toggleLoop() {
+            isLoopActive = !isLoopActive;
+            globalAudioPlayer.loop = isLoopActive;
+            const loopBtn = document.getElementById('loopBeatBtn');
+            if (isLoopActive) {
+                loopBtn.classList.add('loop-active');
+            } else {
+                loopBtn.classList.remove('loop-active');
             }
-            
-            const indiceScelto = Math.abs(hash) % listaTracce.length;
-            tracciaDaily = listaTracce[indiceScelto];
-            
-            document.getElementById('dailyBeatTitle').textContent = tracciaDaily.nome.toLowerCase();
-            document.getElementById('dailyBeatPlayBtn').onclick = () => {
-                suonaTraccia(tracciaDaily.nome, tracciaDaily.url);
-            };
         }
 
         setInterval(() => {
@@ -1235,6 +1205,23 @@
                 return;
             }
             renderGrid();
+            setupDailyBeat();
+        }
+
+        function setupDailyBeat() {
+            if (listaTracce.length === 0) return;
+            const oggi = new Date();
+            const seed = oggi.getDate() + oggi.getMonth() + oggi.getFullYear();
+            const indiceDaily = seed % listaTracce.length;
+            const dailyBeat = listaTracce[indiceDaily];
+            
+            const dailyTitleEl = document.getElementById('dailyBeatTitle');
+            const dailyPlayBtn = document.getElementById('dailyBeatPlayBtn');
+            
+            if (dailyTitleEl) dailyTitleEl.textContent = dailyBeat.nome.toLowerCase();
+            if (dailyPlayBtn) {
+                dailyPlayBtn.onclick = () => suonaTraccia(dailyBeat.nome, dailyBeat.url);
+            }
         }
 
         function triggerPageGlitchEffect(callback) {
@@ -1284,6 +1271,7 @@
             aggiungiEventiCursore(document.querySelectorAll('.page-btn'));
             aggiungiEventiCursore(document.querySelectorAll('.traccia'));
             aggiungiEventiCursore(document.querySelectorAll('.play-track-btn'));
+            aggiungiEventiCursore(document.querySelectorAll('.random-shuffle-btn, .loop-btn'));
         }
 
         function changePage(direzione) {
@@ -1375,7 +1363,6 @@
         window.addEventListener('DOMContentLoaded', () => {
             checkSavedTheme();
             caricaTracce();
-            inizializzaDailyBeat();
             
             setTimeout(() => {
                 eseguiGlitchIngresso();
