@@ -127,6 +127,7 @@
             padding: 55px 85px;
             transition: transform 0.1s linear; 
             will-change: transform;
+            box-sizing: border-box;
         }
 
         .theme-progress-container, .social-footer, .site-bar {
@@ -378,7 +379,6 @@
         body.glitch-active { animation: bodyPageDestroy 0.45s steps(1) forwards; }
         body.glitch-active .titolo-container, body.glitch-active .social-footer, body.glitch-active .theme-progress-container, body.glitch-active .logo-sfondo-container, body.glitch-active .site-bar { animation: horizontalSliceGlitch 0.45s linear infinite; }
         
-        /* La linea glitch scanline si attiva solo su desktop se attiva la classe */
         @media (min-width: 769px) {
             body.glitch-active .glitch-overlay { opacity: 1; background: repeating-linear-gradient(0deg, var(--scanline-color), var(--scanline-color) 3px, transparent 3px, transparent 7px); animation: fastScanline 0.15s linear infinite; }
         }
@@ -432,17 +432,66 @@
         @media (max-width: 768px) {
             body {
                 overflow-x: hidden;
-                overflow-y: auto; /* Permette lo scroll nativo su smartphone senza blocchi */
+                overflow-y: auto;
+                width: 100%;
             }
-            .titolo-principale-link { font-size: 3.8rem; -webkit-box-reflect: below -12px linear-gradient(transparent 50%, rgba(255, 255, 255, 0.2)); }
-            .titolo-container { padding: 25px 45px; transform: none !important; }
+            .titolo-container { 
+                padding: 20px 15px; 
+                transform: none !important; 
+                max-width: 100%;
+                width: 100%;
+                box-sizing: border-box;
+            }
+            .titolo-principale-link { 
+                font-size: 3.5rem; 
+                letter-spacing: 2px;
+                -webkit-box-reflect: below -8px linear-gradient(transparent 60%, rgba(255, 255, 255, 0.15)); 
+                word-wrap: break-word;
+                white-space: normal;
+                max-width: 100%;
+                margin: 0 auto;
+            }
+            .squircle-svg { display: none; } /* Rimuove il rettangolo neon che forzava l'overflow su schermi stretti */
+            
             .logo-personalizzato-bg { width: 150vw; height: 100vh; }
             .logo-sfondo-container { clip-path: none !important; -webkit-clip-path: none !important; filter: none !important; }
-            .social-footer { bottom: 110px; }
-            .site-bar { padding: 10px; font-size: 0.65rem; }
-            .licenza-text { font-size: 0.6rem; max-width: 90%; }
+            .social-footer { bottom: 105px; gap: 25px; }
+            .site-bar { padding: 10px; font-size: 0.65rem; position: absolute; }
+            .licenza-text { font-size: 0.6rem; max-width: 95%; }
             .vinyl-cursor { display: none !important; }
             body, a, button, .titolo-principale-link, .social-link { cursor: pointer !important; }
+        }
+
+        /* EMERGENZA FIX PER STRUTTURA IN ORIZZONTALE (LANDSCAPE MOBILE) */
+        @media (max-width: 900px) and (orientation: landscape) {
+            body {
+                justify-content: center;
+                min-height: 100vh;
+                padding-top: 40px;
+                box-sizing: border-box;
+            }
+            .theme-progress-container {
+                top: 10px;
+            }
+            .titolo-container {
+                padding: 10px 10px;
+                margin-top: 15px;
+            }
+            .titolo-principale-link {
+                font-size: 2.8rem;
+                -webkit-box-reflect: none; /* Rimuove il riflesso in orizzontale per salvare spazio */
+            }
+            .social-footer {
+                position: relative;
+                bottom: auto;
+                margin-top: 25px;
+                margin-bottom: 70px; /* Previene la collisione con il footer */
+            }
+            .site-bar {
+                position: relative;
+                bottom: auto;
+                padding: 15px 10px;
+            }
         }
     </style>
 </head>
@@ -540,7 +589,6 @@
         let isTitleGlitch = false;
 
         function resizeCanvas() {
-            // Esegue il calcolo del canvas solo se lo schermo è desktop (evita spreco di risorse su mobile)
             if (window.innerWidth > 768) {
                 canvas.width = window.innerWidth;
                 canvas.height = window.innerHeight;
@@ -550,7 +598,6 @@
         resizeCanvas();
 
         function generateNoise() {
-            // Se siamo su smartphone, interrompiamo il loop del rumore video per risparmiare prestazioni
             if (window.innerWidth <= 768) {
                 requestAnimationFrame(generateNoise);
                 return;
