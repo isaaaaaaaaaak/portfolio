@@ -819,6 +819,7 @@
             100% { background-position: 0 50px; }
         }
 
+        /* MEDIA QUERIES MODIFICATE PER SMARTPHONE E TABLET */
         @media (max-width: 900px) {
             .bottom-audio-player {
                 grid-template-columns: 1fr;
@@ -827,17 +828,74 @@
             }
             .player-left-socials {
                 justify-content: center;
-                order: 2;
+                order: 3; /* Invertito: ora va in fondo */
             }
             .player-center-core {
                 order: 1;
+                width: 100%;
+                min-width: 0; /* Impedisce che titoli lunghi allunghino il lettore */
+            }
+            .player-info-meta {
+                width: 100%;
+                min-width: 0;
+            }
+            .player-controls-wrapper {
+                width: 100%;
+            }
+            .player-controls-wrapper audio {
+                width: 100%;
+                max-width: 100%;
             }
             .pitch-container {
                 align-items: center;
-                order: 3;
+                order: 2; /* Invertito: ora va al centro */
             }
             .pagination-container {
                 margin-bottom: 250px;
+            }
+        }
+
+        /* MEDIA QUERY DEDICATA PER TELEFONO IN ORIZZONTALE (LANDSCAPE) */
+        @media (max-width: 950px) and (orientation: landscape) {
+            .bottom-audio-player {
+                grid-template-columns: auto 1fr auto !important;
+                gap: 15px !important;
+                padding: 8px 25px !important;
+            }
+            .player-left-socials {
+                order: 1 !important;
+                justify-content: flex-start !important;
+                gap: 12px !important;
+            }
+            .player-social-icon {
+                width: 22px !important;
+                height: 22px !important;
+            }
+            .player-center-core {
+                order: 2 !important;
+                flex-direction: row !important;
+                gap: 15px !important;
+                justify-content: center !important;
+            }
+            .player-info-meta {
+                max-width: 160px !important;
+            }
+            .player-info-meta .current-track-title {
+                font-size: 1.1rem !important;
+                text-align: left !important;
+            }
+            .player-controls-wrapper audio {
+                height: 32px !important;
+            }
+            .pitch-container {
+                order: 3 !important;
+                align-items: flex-end !important;
+            }
+            .pitch-container > span {
+                display: none !important; /* Salva spazio togliendo il testo */
+            }
+            .pagination-container {
+                margin-bottom: 100px !important;
             }
         }
 
@@ -886,14 +944,12 @@
 
         <!-- RIGA INTERATTIVA BILANCIATA E SIMMETRICA -->
         <div class="interactive-row">
-            <!-- SHUFFLE RE-STYLING PULITO -->
             <button class="random-shuffle-btn" id="randomBeatBtn" onclick="riproduciBeatCasuale()" title="riproduci beat casuale">
                 <svg viewBox="0 0 24 24">
                     <path d="M10.59 9.17L5.41 4 4 5.41l5.17 5.17 1.42-1.41zM14.5 4l2.04 2.04L4 18.59 5.41 20 17.96 7.45 20 9.5V4h-5.5zm.33 9.41l-1.41 1.41 3.13 3.13L14.5 20H20v-5.5l-2.04 2.04-3.13-3.13z"/>
                 </svg>
             </button>
 
-            <!-- DAILY CONTAINER CENTRALE -->
             <div class="daily-beat-container" id="dailyBeatContainer">
                 <div class="daily-beat-info">
                     <div class="daily-beat-header">
@@ -905,7 +961,6 @@
                 <button class="play-track-btn" id="dailyBeatPlayBtn">play</button>
             </div>
 
-            <!-- TASTO LOOP OPPOSTO -->
             <button class="loop-btn" id="loopBeatBtn" onclick="toggleLoop()" title="attiva/disattiva loop traccia">
                 <svg viewBox="0 0 24 24">
                     <path d="M7 7h10v3l4-4-4-4v3H5v6h2V7zm10 10H7v-3l-4 4 4 4v-3h12v-6h-2v4z"/>
@@ -1040,8 +1095,9 @@
         
         const pitchSlider = document.getElementById('pitchSlider');
         const pitchValue = document.getElementById('pitchValue');
-        const randomBeatBtn = document.getElementById('randomBeatBtn');
-        const loopBeatBtn = document.getElementById('loopBeatBtn');
+
+        let tracciaDaily = null;
+        let loopAttivo = false;
 
         window.addEventListener('mousemove', (e) => {
             vinyl.style.left = e.clientX + 'px';
@@ -1065,13 +1121,12 @@
         pitchSlider.addEventListener('mouseenter', () => vinyl.classList.add('on-progress'));
         pitchSlider.addEventListener('mouseleave', () => vinyl.classList.remove('on-progress'));
 
-        randomBeatBtn.addEventListener('mouseenter', () => vinyl.classList.add('on-progress'));
-        randomBeatBtn.addEventListener('mouseleave', () => vinyl.classList.remove('on-progress'));
-
-        loopBeatBtn.addEventListener('mouseenter', () => vinyl.classList.add('on-progress'));
-        loopBeatBtn.addEventListener('mouseleave', () => vinyl.classList.remove('on-progress'));
-
         document.querySelectorAll('.player-social-link').forEach(el => {
+            el.addEventListener('mouseenter', () => vinyl.classList.add('on-progress'));
+            el.addEventListener('mouseleave', () => vinyl.classList.remove('on-progress'));
+        });
+
+        document.querySelectorAll('.random-shuffle-btn, .loop-btn').forEach(el => {
             el.addEventListener('mouseenter', () => vinyl.classList.add('on-progress'));
             el.addEventListener('mouseleave', () => vinyl.classList.remove('on-progress'));
         });
@@ -1118,6 +1173,7 @@
             pitchSlider.value = 1;
             pitchValue.textContent = '1.00x';
             
+            globalAudioPlayer.loop = loopAttivo;
             globalAudioPlayer.play();
             bottomPlayer.classList.add('active');
             
@@ -1125,20 +1181,42 @@
             setTimeout(() => bottomPlayer.classList.remove('glitch-flash'), 400);
         }
 
-        function riproduciBeatCasuale() {
-            if (listaTracce.length === 0) return;
-            const indiceCasuale = Math.floor(Math.random() * listaTracce.length);
-            const tracciaCasuale = listaTracce[indiceCasuale];
-            suonaTraccia(tracciaCasuale.nome, tracciaCasuale.url);
+        function toggleLoop() {
+            loopAttivo = !loopAttivo;
+            globalAudioPlayer.loop = loopAttivo;
+            const btn = document.getElementById('loopBeatBtn');
+            if(loopAttivo) {
+                btn.classList.add('loop-active');
+            } else {
+                btn.classList.remove('loop-active');
+            }
         }
 
-        function toggleLoop() {
-            globalAudioPlayer.loop = !globalAudioPlayer.loop;
-            if (globalAudioPlayer.loop) {
-                loopBeatBtn.classList.add('loop-active');
-            } else {
-                loopBeatBtn.classList.remove('loop-active');
+        function riproduciBeatCasuale() {
+            if(listaTracce.length === 0) return;
+            const indice = Math.floor(Math.random() * listaTracce.length);
+            const traccia = listaTracce[indice];
+            suonaTraccia(traccia.nome, traccia.url);
+        }
+
+        function inizializzaDailyBeat() {
+            if (listaTracce.length === 0) return;
+            
+            const oggi = new Date();
+            const stringaData = oggi.getFullYear() + "-" + (oggi.getMonth() + 1) + "-" + oggi.getDate();
+            
+            let hash = 0;
+            for (let i = 0; i < stringaData.length; i++) {
+                hash = stringaData.charCodeAt(i) + ((hash << 5) - hash);
             }
+            
+            const indiceScelto = Math.abs(hash) % listaTracce.length;
+            tracciaDaily = listaTracce[indiceScelto];
+            
+            document.getElementById('dailyBeatTitle').textContent = tracciaDaily.nome.toLowerCase();
+            document.getElementById('dailyBeatPlayBtn').onclick = () => {
+                suonaTraccia(tracciaDaily.nome, tracciaDaily.url);
+            };
         }
 
         setInterval(() => {
@@ -1150,25 +1228,6 @@
             }
         }, 17000);
 
-        function inizializzaDailyBeat() {
-            if (listaTracce.length === 0) return;
-            
-            const oggi = new Date();
-            const seedData = oggi.getFullYear() * 10000 + (oggi.getMonth() + 1) * 100 + oggi.getDate();
-            
-            const indiceDaily = seedData % listaTracce.length;
-            const tracciaDelGiorno = listaTracce[indiceDaily];
-
-            const titoloDaily = document.getElementById('dailyBeatTitle');
-            const btnDaily = document.getElementById('dailyBeatPlayBtn');
-            const contenitoreDaily = document.getElementById('dailyBeatContainer');
-
-            titoloDaily.textContent = tracciaDelGiorno.nome.toLowerCase();
-            btnDaily.onclick = () => suonaTraccia(tracciaDelGiorno.nome, tracciaDelGiorno.url);
-
-            aggiungiEventiCursore([btnDaily, contenitoreDaily]);
-        }
-
         function caricaTracce() {
             if (listaTracce.length === 0) {
                 gridContainer.innerHTML = '<div style="grid-column: 1/-1; opacity: 0.5; padding: 40px;">Nessun beat trovato.</div>';
@@ -1176,7 +1235,6 @@
                 return;
             }
             renderGrid();
-            inizializzaDailyBeat();
         }
 
         function triggerPageGlitchEffect(callback) {
@@ -1317,6 +1375,7 @@
         window.addEventListener('DOMContentLoaded', () => {
             checkSavedTheme();
             caricaTracce();
+            inizializzaDailyBeat();
             
             setTimeout(() => {
                 eseguiGlitchIngresso();
