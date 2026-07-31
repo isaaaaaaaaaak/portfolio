@@ -174,7 +174,7 @@
         .vinyl-cursor.on-progress::after { opacity: 1; transform: scale(1.1) translate(0, 0); }
         .vinyl-cursor.spin::before { animation: spinVinyl 0.3s cubic-bezier(0.25, 1, 0.5, 1) forwards; }
 
-        @keyframes spinVinyl {
+        @pragma keyframes spinVinyl {
             0% { transform: scale(1.2) rotate(0deg); }
             100% { transform: scale(1) rotate(360deg); }
         }
@@ -282,7 +282,7 @@
             filter: drop-shadow(0px 0px 50px rgba(221, 160, 221, 0.35)); 
         }
 
-        /* CONTENITORE FOTO SENZA MASCHERA ELLITTICA */
+        /* CONTENITORE FOTO */
         .photo-clip-mask {
             width: 95%;
             height: auto;
@@ -332,7 +332,6 @@
             will-change: filter;
         }
 
-        /* DISTORSIONE GLITCH AUTOMATICA */
         .photo-clip-mask.auto-glitch-active .cyber-face-img { animation: extremePhotoDestroy 0.45s steps(1) infinite; }
         .photo-clip-mask.auto-glitch-active .scanner-line { animation: extremeScannerDestroy 0.45s steps(1) infinite; }
 
@@ -425,11 +424,8 @@
             pointer-events: none !important;
         }
         
-        body.bio-focus-attivo .intro-photo-side {
-            z-index: 1 !important;
-        }
+        body.bio-focus-attivo .intro-photo-side { z-index: 1 !important; }
 
-        /* BIO IN PRIMO PIANO - CENTRATA AL 100% */
         .bio-backdrop-card.in-focus {
             z-index: 99999 !important; 
             position: fixed !important;
@@ -460,11 +456,8 @@
             pointer-events: none !important;
         }
 
-        body.photo-focus-attivo .intro-text-side {
-            z-index: 1 !important;
-        }
+        body.photo-focus-attivo .intro-text-side { z-index: 1 !important; }
 
-        /* FOTO IN PRIMO PIANO - CENTRATA AL 100% */
         .photo-frame.in-focus {
             z-index: 99999 !important; 
             position: fixed !important;
@@ -499,8 +492,8 @@
 
         .photo-frame.in-focus .scanner-line { display: none !important; }
 
-        /* INDICATORI DI SCROLL */
-        .scroll-indicator, .go-back-indicator {
+        /* INDICATORI DI SCROLL GENERALI */
+        .scroll-indicator, .go-back-indicator, .scroll-indicator-bio {
             position: absolute;
             left: 50%;
             transform: translateX(-50%);
@@ -517,6 +510,7 @@
         }
 
         .scroll-indicator { bottom: 40px; animation: pulseScroll 1.5s infinite alternate; }
+        .scroll-indicator-bio { display: none; }
         .go-back-indicator { bottom: 40px; animation: pulseScrollBack 1.5s infinite alternate; opacity: 0; pointer-events: none; }
 
         @keyframes pulseScroll { 0% { transform: translate(-50%, 0); opacity: 0.3; } 100% { transform: translate(-50%, 8px); opacity: 0.7; } }
@@ -631,33 +625,215 @@
             75% { background: var(--glitch-shadow-1); }
         }
 
-        /* RESPONSIVE LAYOUT */
+        /* ==========================================
+           NUOVA ARCHITETTURA SMARTPHONE (RESPONSIVE)
+           ========================================== */
         @media (max-width: 768px) {
-            body { height: auto; overflow: auto; }
-            .scroll-wrapper { height: auto; transform: none !important; }
-            .intro-container { flex-direction: column; height: auto; position: relative; top: 0 !important; left: 0 !important; opacity: 1 !important; }
-            .intro-photo-side { width: 100%; border-bottom: 1px solid rgba(18, 18, 18, 0.08); padding: 100px 20px 40px 20px; justify-content: center; height: 50vh; align-items: center; opacity: 1 !important; filter: none !important; }
-            .photo-frame { width: 100%; height: 100%; perspective: none; max-width: 280px; filter: none !important; overflow: visible; }
-            .photo-frame.in-focus { transform: translate(-50%, -50%) scale(1.0) !important; width: 90vw; height: auto; z-index: 99999 !important; }
-            .photo-clip-mask { width: 100%; height: 100%; max-height: 40vh; transform: none !important; overflow: visible; }
+            body { 
+                height: auto; 
+                overflow-x: hidden; 
+                overflow-y: scroll; 
+                scroll-behavior: smooth;
+            }
+            .scroll-wrapper { 
+                height: auto; 
+                transform: none !important; 
+            }
+            
+            /* Navbar e controlli bloccati ed isolati */
+            .btn-back-arrow {
+                top: 20px;
+                left: 20px;
+                z-index: 200;
+            }
+            .theme-progress-container {
+                top: 20px;
+                left: auto;
+                right: 20px;
+                transform: none;
+                z-index: 200;
+            }
+
+            /* Container principale strutturato a blocchi definiti da 100vh ciascuno */
+            .intro-container { 
+                flex-direction: column; 
+                height: auto; 
+                position: relative; 
+                top: 0 !important; 
+                left: 0 !important; 
+                opacity: 1 !important; 
+            }
+
+            /* BLOCCO 1: SOLO FACCIA */
+            .intro-photo-side { 
+                width: 100vw; 
+                height: 100vh;
+                box-sizing: border-box;
+                padding: 80px 20px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                border-bottom: none;
+                opacity: 1 !important;
+                filter: none !important;
+                position: relative;
+            }
+            .photo-frame { 
+                width: 100%; 
+                height: 70vh; 
+                perspective: none; 
+                max-width: 320px; 
+                filter: none !important; 
+                overflow: visible; 
+            }
+            .photo-clip-mask { 
+                width: 100%; 
+                height: 100%; 
+                max-height: 60vh; 
+                transform: none !important; 
+                overflow: visible; 
+            }
+            .cyber-face-img { 
+                filter: none !important; 
+                object-fit: contain;
+            }
             .scanner-line { display: none !important; }
-            .cyber-face-img { filter: none !important; }
-            .intro-text-side { width: 100%; padding: 40px 20px; text-align: center; align-items: center; opacity: 1 !important; filter: none !important; }
-            .bio-backdrop-card { padding: 30px 20px; background: transparent; border: none; box-shadow: none; backdrop-filter: none; max-width: 100%; }
-            .bio-backdrop-card.in-focus { transform: translate(-50%, -50%) scale(1.0) !important; width: 95vw; padding: 25px; z-index: 99999 !important; }
-            .bio-backdrop-card h1 { font-size: 3.5rem; margin-bottom: 24px; text-align: center; }
-            .intro-subtitle { margin-bottom: 24px; font-size: 1rem; text-align: center; }
-            .intro-bio { text-align: center; }
-            .intro-bio .bio-cta { text-align: center; }
-            .split-container { flex-direction: column; position: relative; top: 0; opacity: 1 !important; }
-            .split-container:hover .split-side { opacity: 0.5; }
-            .split-container .split-side:hover { opacity: 1; background-color: transparent; }
-            .left-side { border-right: none; border-bottom: 1px solid rgba(18, 18, 18, 0.08); }
-            body.dark-mode .left-side { border-bottom: 1px solid rgba(221, 160, 221, 0.08); }
-            .split-title { font-size: 2.8rem; }
+
+            /* BLOCCO 2: SOLO BIO */
+            .intro-text-side { 
+                width: 100vw; 
+                height: 100vh;
+                box-sizing: border-box;
+                padding: 80px 25px; 
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                opacity: 1 !important; 
+                filter: none !important;
+                position: relative;
+            }
+            .bio-backdrop-card { 
+                padding: 25px; 
+                background: var(--card-bg); 
+                border: 1px solid var(--card-border); 
+                box-shadow: 0 8px 32px var(--card-shadow); 
+                backdrop-filter: blur(8px);
+                -webkit-backdrop-filter: blur(8px);
+                border-radius: 12px;
+                max-width: 100%; 
+                text-align: center;
+            }
+            .bio-backdrop-card h1 { 
+                font-size: 3.2rem; 
+                margin-bottom: 15px; 
+                text-align: center; 
+            }
+            .intro-subtitle { 
+                margin-bottom: 20px; 
+                font-size: 0.95rem; 
+                text-align: center; 
+            }
+            .intro-bio { 
+                text-align: center; 
+                font-size: 0.95rem;
+                line-height: 1.5;
+            }
+            .intro-bio .bio-cta { 
+                text-align: center; 
+                font-size: 0.85rem;
+                margin-top: 15px;
+            }
+
+            /* BLOCCO 3: SONGS E BEATS */
+            .split-container { 
+                flex-direction: column; 
+                position: relative; 
+                top: 0; 
+                height: 100vh;
+                opacity: 1 !important; 
+            }
+            .split-side {
+                flex: 1;
+                width: 100%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            .split-container:hover .split-side { opacity: 0.6; }
+            .split-container .split-side:hover { opacity: 1; background-color: var(--bg-hover-side); }
+            .left-side { 
+                border-right: none; 
+                border-bottom: 1px solid rgba(18, 18, 18, 0.15); 
+            }
+            body.dark-mode .left-side { border-bottom: 1px solid rgba(221, 160, 221, 0.25); }
+            .split-title { font-size: 3.2rem; }
+
+            /* Indicatori di scorrimento su Mobile */
+            .scroll-indicator, .scroll-indicator-bio, .go-back-indicator { 
+                display: block !important; 
+                position: absolute; 
+                left: 50%; 
+                transform: translateX(-50%); 
+                margin-top: 0;
+                opacity: 0.7; 
+                text-align: center;
+                animation: pulseScroll 1.5s infinite alternate !important;
+                pointer-events: auto !important;
+            }
+            .scroll-indicator { bottom: 30px; }
+            .scroll-indicator-bio { bottom: 30px; }
+            .go-back-indicator { bottom: 30px; opacity: 0.7; }
+
+            /* Disattivazione elementi inutili su mobile */
             .vinyl-cursor { display: none !important; }
-            body, a, button, .split-side, .btn-back-arrow, .scroll-indicator, .go-back-indicator { cursor: pointer !important; opacity: 1 !important; pointer-events: auto !important; filter: none !important; }
-            .scroll-indicator, .go-back-indicator { display: block; position: relative; bottom: 0; left: 0; transform: none; margin-top: 30px; animation: none; opacity: 0.7; text-align: center; }
+            body, a, button, .split-side, .btn-back-arrow { cursor: pointer !important; }
+            .photo-frame.in-focus, .bio-backdrop-card.in-focus { display: none !important; }
+
+            /* ORIZZONTALE SMARTPHONE (LANDSCAPE OPTIMIZATION) */
+            @media (orientation: landscape) {
+                .intro-photo-side {
+                    height: 100vh;
+                    padding: 40px 20px;
+                }
+                .photo-frame {
+                    height: 80vh;
+                    max-width: 240px;
+                }
+                .intro-text-side {
+                    height: auto;
+                    min-height: 100vh;
+                    padding: 60px 20px;
+                }
+                .bio-backdrop-card {
+                    padding: 20px;
+                }
+                .bio-backdrop-card h1 {
+                    font-size: 2.5rem;
+                    margin-bottom: 8px;
+                }
+                .intro-subtitle {
+                    margin-bottom: 10px;
+                }
+                .intro-bio {
+                    font-size: 0.85rem;
+                    line-height: 1.4;
+                }
+                .split-container {
+                    flex-direction: row;
+                    height: 100vh;
+                }
+                .left-side {
+                    border-bottom: none;
+                    border-right: 1px solid rgba(18, 18, 18, 0.15);
+                }
+                body.dark-mode .left-side {
+                    border-right: 1px solid rgba(221, 160, 221, 0.25);
+                    border-bottom: none;
+                }
+                .split-title {
+                    font-size: 2.8rem;
+                }
+            }
         }
     </style>
 </head>
@@ -688,29 +864,33 @@
 
         <!-- SEZIONE 1: INTRODUZIONE PERSONALE -->
         <section class="intro-container" id="introSection">
+            <!-- STEP 1 MOBILE: SOLO FACCIA -->
             <div class="intro-photo-side" id="photoSide">
                 <div class="photo-frame" id="photoFrame">
                     <div class="photo-clip-mask" id="photoClipMask">
                         <div class="scanner-line" id="scannerLine"></div>
-                        <!-- Inizialmente impostata su testa.PNG -->
                         <img id="cyberFace" class="cyber-face-img" src="testa.PNG" alt="Isaak Face">
                     </div>
                 </div>
+                <button class="scroll-indicator" id="scrollIndicator" aria-label="Scorri giù alla descrizione">↓ scroll down</button>
             </div>
+            
+            <!-- STEP 2 MOBILE: SOLO DESCRIZIONE -->
             <div class="intro-text-side" id="textSide">
                 <div class="bio-backdrop-card" id="bioCard">
                     <h1>isaak</h1>
                     <div class="intro-subtitle">"tra nostalgia e realtà"</div>
                     <div class="intro-bio">
-                        Produttore classe '02, Isaak si contraddistingue per il suo suono e stile derivante inizialmente dalla dubstep e riadattato con il tempo dall'influenza dei cantanti con cui ha lavorato. Ha iniziato il seu percorso con la musica approcciandosi alle DAWs nel 2017 e prendendo nel 2024 l'attestato di Tecnico del suono all'Accademia del Cinema di Bologna. La passione nasce dal suo bisogno di comporre musica, oltre che ascoltarla continuamente.
+                        Produttore classe '02, Isaak si contraddistingue per il suo suono e stile derivante inizialmente dalla dubstep e riadattato con il tempo dall'influenza dei cantanti con cui ha lavorato. Ha iniziato il suo percorso con la musica approcciandosi alle DAWs nel 2017 e prendendo nel 2024 l'attestato di Tecnico del suono all'Accademia del Cinema di Bologna. La passione nasce dal suo bisogno di comporre musica, oltre che ascoltarla continuamente.
                         <span class="bio-cta">QUA SOTTO PUOI TROVARE ALCUNI DEI MIEI PROGETTI, DIVISI TRA BEATS E CANZONI.</span>
                     </div>
                 </div>
+                <button class="scroll-indicator-bio" id="scrollIndicatorBio" aria-label="Scorri giù ai progetti">↓ scroll down</button>
             </div>
-            <button class="scroll-indicator" id="scrollIndicator" aria-label="Scorri giù alle sezioni">↓ scroll down</button>
+            
         </section>
 
-        <!-- SEZIONE 2: ARCHIVIO SELEZIONE -->
+        <!-- SEZIONE 2: ARCHIVIO SELEZIONE (STEP 3 MOBILE) -->
         <main class="split-container" id="selectionSection">
             <a href="portfolio_tracce.html" class="split-side left-side">
                 <h2 class="split-title" data-text="songs">songs</h2>
@@ -730,9 +910,11 @@
         const backArrow = document.querySelector('.btn-back-arrow');
         const introSection = document.getElementById('introSection');
         const scrollIndicator = document.getElementById('scrollIndicator');
+        const scrollIndicatorBio = document.getElementById('scrollIndicatorBio');
         const goBackBtn = document.getElementById('goBackBtn'); 
         const scrollWrapper = document.getElementById('scrollWrapper');
         const selectionSection = document.getElementById('selectionSection');
+        const textSide = document.getElementById('textSide');
         const canvas = document.getElementById('tvNoiseCanvas');
         const ctx = canvas.getContext('2d');
         
@@ -858,7 +1040,6 @@
             photoFrame.classList.remove('in-focus');
             bioCard.classList.remove('in-focus');
             
-            // Ripristina l'immagine originale testa.PNG a bassa risoluzione/glitchata
             faceImg.src = "testa.PNG";
             
             const isDark = document.body.classList.contains('dark-mode');
@@ -879,8 +1060,6 @@
                     document.body.classList.add('focus-attivo');
                     document.body.classList.add('photo-focus-attivo');
                     photoFrame.classList.add('in-focus');
-                    
-                    // Mostra isaak.JPG quando la foto è aperta in primo piano
                     faceImg.src = "isaak.JPG";
                 }
             });
@@ -946,7 +1125,7 @@
             }
         });
 
-        const interactives = [themeProgressBtn, backArrow, scrollIndicator, goBackBtn];
+        const interactives = [themeProgressBtn, backArrow, scrollIndicator, scrollIndicatorBio, goBackBtn];
         interactives.forEach(el => {
             if (el) {
                 el.addEventListener('mouseenter', () => vinyl.classList.add('on-progress'));
@@ -1013,7 +1192,11 @@
 
         scrollIndicator.addEventListener('click', () => {
             if (window.innerWidth > 768) { targetScroll = targetHeight; } 
-            else { selectionSection.scrollIntoView({ behavior: 'smooth' }); }
+            else { textSide.scrollIntoView({ behavior: 'smooth' }); }
+        });
+
+        scrollIndicatorBio.addEventListener('click', () => {
+            selectionSection.scrollIntoView({ behavior: 'smooth' });
         });
 
         goBackBtn.addEventListener('click', () => {
