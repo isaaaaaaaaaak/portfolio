@@ -889,6 +889,16 @@
         const pitchSlider = document.getElementById('pitchSlider');
         const pitchValue = document.getElementById('pitchValue');
 
+        function gestisciSfondoResponsive() {
+            if (window.innerWidth <= 768 || (window.innerWidth <= 950 && window.matchMedia("(orientation: landscape)").matches)) {
+                const isDark = document.body.classList.contains('dark-mode');
+                document.body.style.setProperty('--bg-main', isDark ? '#000000' : '#f5e6f5');
+            } else {
+                document.body.style.removeProperty('--bg-main');
+            }
+        }
+        window.addEventListener('resize', gestisciSfondoResponsive);
+
         window.addEventListener('mousemove', (e) => {
             vinyl.style.left = e.clientX + 'px';
             vinyl.style.top = e.clientY + 'px';
@@ -1068,6 +1078,7 @@
 
         function updateLabel(isDark) {
             themeLabel.textContent = isDark ? 'dark' : 'light';
+            gestisciSfondoResponsive();
         }
 
         function checkSavedTheme() {
@@ -1126,6 +1137,7 @@
             setTimeout(() => {
                 eseguiGlitchIngresso();
             }, 700); 
+            gestisciSfondoResponsive();
         });
     </script>
 </body>
