@@ -19,6 +19,15 @@
             font-style: normal;
         }
 
+        /* FIX PER EVITARE LO SFONDO BIANCO SU MOBILE IN ZOOM-OUT */
+        html {
+            background-color: #f5e6f5;
+            transition: background-color 0.3s ease;
+        }
+        html.dark-theme-active {
+            background-color: #000000;
+        }
+
         body {
             --bg-main: radial-gradient(circle at center, #f5e6f5 0%, #e2c1e2 60%, #c99ec9 100%);
             --bg-flat-solid: #f5e6f5; 
@@ -36,6 +45,7 @@
             --scanline-color: rgba(18, 18, 18, 0.07);
 
             background: var(--bg-main);
+            background-attachment: fixed; /* Mantiene il gradiente fisso sullo sfondo */
             margin: 0;
             padding: 0;
             display: flex;
@@ -280,7 +290,7 @@
                         border-color 0.4s ease,
                         opacity 0.3s ease;
             box-sizing: border-box;
-            height: 220px; /* Altezza fissa stagna del box traccia per bloccare la griglia */
+            height: 220px; 
         }
 
         body.dark-mode .traccia {
@@ -342,7 +352,6 @@
             color: var(--bg-flat-solid) !important;
         }
 
-        /* STRUTTURA CONTENITORE UNIFICATO DAILY + NAVIGAZIONE ICONICA */
         .interactive-row {
             display: flex;
             align-items: center;
@@ -354,7 +363,6 @@
             max-width: 600px;
         }
 
-        /* MINI PULSANTI INTERATTIVI (SHUFFLE / LOOP) */
         .random-shuffle-btn, .loop-btn {
             background: transparent;
             border: 2px solid var(--color-text);
@@ -395,7 +403,6 @@
             transform: scale(0.92);
         }
 
-        /* STATO ATTIVO PULSANTE LOOP */
         .loop-btn.loop-active {
             background: var(--color-text);
             opacity: 1;
@@ -407,7 +414,6 @@
             fill: #000000;
         }
 
-        /* DAILY BEAT CONTAINER COMPATTATO */
         .daily-beat-container {
             padding: 10px 20px;
             background: rgba(18, 18, 18, 0.05);
@@ -495,7 +501,6 @@
             font-weight: bold;
         }
 
-        /* BOTTOM PLAYER */
         .bottom-audio-player {
             position: fixed;
             bottom: 0; left: 0; width: 100%;
@@ -667,7 +672,6 @@
             filter: invert(1) hue-rotate(180deg);
         }
 
-        /* FIX RIMOZIONE TRE PUNTINI E PANNELLO OVERFLOW VELOCITA' */
         audio::-webkit-media-controls-playback-speed-button,
         audio::-webkit-media-controls-overflow-button {
             display: none !important;
@@ -709,7 +713,6 @@
             background: transparent;
         }
 
-        /* PAGINAZIONE: INCREMENTATO MARGINE PER EVITARE SOVRAPPOSIZIONI */
         .pagination-container {
             display: grid;
             grid-template-columns: repeat(5, 1fr);
@@ -828,7 +831,6 @@
             100% { background-position: 0 50px; }
         }
 
-        /* MEDIA QUERIES MODIFICATE PER SMARTPHONE E TABLET */
         @media (max-width: 900px) {
             .bottom-audio-player {
                 grid-template-columns: 1fr;
@@ -864,7 +866,6 @@
             }
         }
 
-        /* MEDIA QUERY DEDICATA PER TELEFONO IN ORIZZONTALE (LANDSCAPE) */
         @media (max-width: 950px) and (orientation: landscape) {
             .bottom-audio-player {
                 grid-template-columns: auto 1fr auto !important;
@@ -952,7 +953,6 @@
 
         <div class="portfolio-grid" id="portfolio-grid"></div>
 
-        <!-- RIGA INTERATTIVA BILANCIATA E SIMMETRICA -->
         <div class="interactive-row">
             <button class="random-shuffle-btn" id="randomBeatBtn" onclick="riproduciBeatCasuale()" title="riproduci beat casuale">
                 <svg viewBox="0 0 24 24">
@@ -1027,8 +1027,9 @@
     </div>
 
     <script>
+        // LISTA INTEGRALE COMPLETA DI 60 TRACCE AGGIORNATA
         let listaTracce = [
-            { nome: "& u think im crazy", url: "https://pub-4b347fb9f02f48879ae42ce3d3bd33d5.r2.dev/%26%20u%20think%20im%20crazy.mp3" },
+            { nome: "90 street to school", url: "https://pub-4b347fb9f02f48879ae42ce3d3bd33d5.r2.dev/'90%20street%20to%20school.mp3" },
             { nome: "aether nether", url: "https://pub-4b347fb9f02f48879ae42ce3d3bd33d5.r2.dev/aether%20nether.mp3" },
             { nome: "baby girl", url: "https://pub-4b347fb9f02f48879ae42ce3d3bd33d5.r2.dev/baby%20girl.mp3" },
             { nome: "begging", url: "https://pub-4b347fb9f02f48879ae42ce3d3bd33d5.r2.dev/begging.mp3" },
@@ -1041,7 +1042,7 @@
             { nome: "bully", url: "https://pub-4b347fb9f02f48879ae42ce3d3bd33d5.r2.dev/bully.mp3" },
             { nome: "butterfly guitar", url: "https://pub-4b347fb9f02f48879ae42ce3d3bd33d5.r2.dev/butterfly%20guitar.mp3" },
             { nome: "cave laboratory", url: "https://pub-4b347fb9f02f48879ae42ce3d3bd33d5.r2.dev/cave%20laboratory.mp3" },
-            { nome: "città del sole", url: "https://pub-4b347fb9f02f48879ae42ce3d3bd33d5.r2.dev/citt%C3%A0%20del%20sole.mp3" },
+            { nome: "città del soleil", url: "https://pub-4b347fb9f02f48879ae42ce3d3bd33d5.r2.dev/citt%C3%A0%20del%20sole.mp3" },
             { nome: "code red", url: "https://pub-4b347fb9f02f48879ae42ce3d3bd33d5.r2.dev/code%20red.mp3" },
             { nome: "dark jungle", url: "https://pub-4b347fb9f02f48879ae42ce3d3bd33d5.r2.dev/dark%20jungle.mp3" },
             { nome: "deep inner thoughts", url: "https://pub-4b347fb9f02f48879ae42ce3d3bd33d5.r2.dev/deep%20inner%20thoughts.mp3" },
@@ -1061,7 +1062,7 @@
             { nome: "making history", url: "https://pub-4b347fb9f02f48879ae42ce3d3bd33d5.r2.dev/making%20history.mp3" },
             { nome: "mario & yoshi", url: "https://pub-4b347fb9f02f48879ae42ce3d3bd33d5.r2.dev/mario%20%26%20yoshi.mp3" },
             { nome: "mechanical bulldog", url: "https://pub-4b347fb9f02f48879ae42ce3d3bd33d5.r2.dev/mechanical%20bulldog.mp3" },
-            { nome: "nEED mE fIRST", url: "https://pub-4b347fb9f02f48879ae42ce3d3bd33d5.r2.dev/nEED%20mE%20mE%20fIRST.mp3" },
+            { nome: "nEED mE fIRST", url: "https://pub-4b347fb9f02f48879ae42ce3d3bd33d5.r2.dev/nEED%20mE%20fIRST.mp3" },
             { nome: "nether aether", url: "https://pub-4b347fb9f02f48879ae42ce3d3bd33d5.r2.dev/nether%20aether.mp3" },
             { nome: "never sleep", url: "https://pub-4b347fb9f02f48879ae42ce3d3bd33d5.r2.dev/never%20sleep.mp3" },
             { nome: "no more n then again", url: "https://pub-4b347fb9f02f48879ae42ce3d3bd33d5.r2.dev/no%20more%20n%20then%20again.mp3" },
@@ -1072,7 +1073,21 @@
             { nome: "one more night", url: "https://pub-4b347fb9f02f48879ae42ce3d3bd33d5.r2.dev/one%20more%20night.mp3" },
             { nome: "pre-post joint", url: "https://pub-4b347fb9f02f48879ae42ce3d3bd33d5.r2.dev/pre-post%20joint.mp3" },
             { nome: "purple saturday", url: "https://pub-4b347fb9f02f48879ae42ce3d3bd33d5.r2.dev/purple%20saturday.mp3" },
-            { nome: "reggae-ton", url: "https://pub-4b347fb9f02f48879ae42ce3d3bd33d5.r2.dev/reggae-ton.mp3" }
+            { nome: "reggae-ton", url: "https://pub-4b347fb9f02f48879ae42ce3d3bd33d5.r2.dev/reggae-ton.mp3" },
+            { nome: "rey", url: "https://pub-4b347fb9f02f48879ae42ce3d3bd33d5.r2.dev/rey.mp3" },
+            { nome: "rose", url: "https://pub-4b347fb9f02f48879ae42ce3d3bd33d5.r2.dev/rose.mp3" },
+            { nome: "sad bounce", url: "https://pub-4b347fb9f02f48879ae42ce3d3bd33d5.r2.dev/sad%20bounce.mp3" },
+            { nome: "shut up and then shut up again", url: "https://pub-4b347fb9f02f48879ae42ce3d3bd33d5.r2.dev/shut%20up%20and%20then%20shut%20up%20again.mp3" },
+            { nome: "slot", url: "https://pub-4b347fb9f02f48879ae42ce3d3bd33d5.r2.dev/slot.mp3" },
+            { nome: "sometimes i feel like i'm making it", url: "https://pub-4b347fb9f02f48879ae42ce3d3bd33d5.r2.dev/sometimes%20i%20feel%20like%20i'm%20making%20it.mp3" },
+            { nome: "space", url: "https://pub-4b347fb9f02f48879ae42ce3d3bd33d5.r2.dev/space.mp3" },
+            { nome: "steve harvey type beat", url: "https://pub-4b347fb9f02f48879ae42ce3d3bd33d5.r2.dev/steve%20harvey%20type%20beat.mp3" },
+            { nome: "tel aviv type beat", url: "https://pub-4b347fb9f02f48879ae42ce3d3bd33d5.r2.dev/tel%20aviv%20type%20beat.mp3" },
+            { nome: "trema", url: "https://pub-4b347fb9f02f48879ae42ce3d3bd33d5.r2.dev/trema.mp3" },
+            { nome: "turn off your device and listen", url: "https://pub-4b347fb9f02f48879ae42ce3d3bd33d5.r2.dev/turn%20off%20your%20device%20and%20listen.mp3" },
+            { nome: "what to do", url: "https://pub-4b347fb9f02f48879ae42ce3d3bd33d5.r2.dev/what%20to%20do.mp3" },
+            { nome: "yellow like brass", url: "https://pub-4b347fb9f02f48879ae42ce3d3bd33d5.r2.dev/yellow%20like%20brass.mp3" },
+            { nome: "zara vogue type shi", url: "https://pub-4b347fb9f02f48879ae42ce3d3bd33d5.r2.dev/zara%20vogue%20type%20shi.mp3" }
         ];
 
         const traccePerPagina = 6; 
@@ -1276,7 +1291,7 @@
 
         function changePage(direzione) {
             const totalePagine = Math.ceil(listaTracce.length / traccePerPagina);
-            const nuovaPagina = paginaCorrente + direzione;
+            const nuovaPagina = paginaCorrente + dirección;
             if (nuovaPagina >= 1 && nuovaPagina <= totalePagine) {
                 triggerPageGlitchEffect(() => {
                     paginaCorrente = nuovaPagina;
@@ -1309,6 +1324,12 @@
 
         function updateLabel(isDark) {
             themeLabel.textContent = isDark ? 'dark' : 'light';
+            // Gestione della classe sull'html element per evitare flash bianchi
+            if(isDark) {
+                document.documentElement.classList.add('dark-theme-active');
+            } else {
+                document.documentElement.classList.remove('dark-theme-active');
+            }
         }
 
         function checkSavedTheme() {
