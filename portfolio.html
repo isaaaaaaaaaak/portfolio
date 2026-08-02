@@ -1291,7 +1291,7 @@
 
         function changePage(direzione) {
             const totalePagine = Math.ceil(listaTracce.length / traccePerPagina);
-            const nuovaPagina = paginaCorrente + dirección;
+            const nuovaPagina = paginaCorrente + direzione;
             if (nuovaPagina >= 1 && nuovaPagina <= totalePagine) {
                 triggerPageGlitchEffect(() => {
                     paginaCorrente = nuovaPagina;
