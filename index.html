@@ -627,6 +627,10 @@
             if (window.innerWidth > 768) {
                 canvas.width = window.innerWidth;
                 canvas.height = window.innerHeight;
+                document.body.style.removeProperty('--bg-main');
+            } else {
+                const isDark = document.body.classList.contains('dark-mode');
+                document.body.style.setProperty('--bg-main', isDark ? '#000000' : '#f5e6f5');
             }
         }
         window.addEventListener('resize', resizeCanvas);
@@ -838,6 +842,9 @@
 
         function updateLabel(isDark) { 
             themeLabel.textContent = isDark ? 'dark' : 'light'; 
+            if (window.innerWidth <= 768 || (window.innerWidth <= 900 && window.matchMedia("(orientation: landscape)").matches)) {
+                document.body.style.setProperty('--bg-main', isDark ? '#000000' : '#f5e6f5');
+            }
         }
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -852,6 +859,7 @@
             requestAnimationFrame(generateNoise);
             triggerRandomGlitch();
             startTextGlitchLoop();
+            resizeCanvas();
         });
 
         function toggleDarkMode() {
