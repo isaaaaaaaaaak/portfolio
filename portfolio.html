@@ -132,7 +132,7 @@
             transition: none !important;
         }
 
-        a, button, .page-btn, .btn-back-arrow, .play-track-btn, .pitch-slider-input, .player-social-link, .random-shuffle-btn, .loop-btn {
+        a, button, .page-btn, .btn-back-arrow, .play-track-btn, .pitch-slider-input, .player-social-link, .random-shuffle-btn, .loop-btn, .search-input {
             cursor: none !important;
         }
 
@@ -247,13 +247,48 @@
             letter-spacing: 4px;
             color: var(--color-text);
             margin-top: 120px; 
-            margin-bottom: 60px;
+            margin-bottom: 20px;
             text-transform: lowercase;
             opacity: 0.6;
             transition: color 0.5s ease, opacity 0.3s ease;
         }
 
         .titolo-sezione:hover { opacity: 1; }
+
+        /* NUOVO ELEMENTO: BARRA DI RICERCA INTERNA ED ESTETICA */
+        .search-container {
+            width: 95%;
+            max-width: 400px;
+            margin-bottom: 40px;
+            opacity: 0.6;
+            transition: opacity 0.3s ease;
+        }
+
+        .search-container:hover, .search-container:focus-within {
+            opacity: 1;
+        }
+
+        .search-input {
+            width: 100%;
+            background: transparent;
+            border: 2px solid var(--color-text);
+            padding: 10px 15px;
+            box-sizing: border-box;
+            font-family: monospace;
+            font-size: 1rem;
+            color: var(--color-text);
+            letter-spacing: 2px;
+            text-transform: lowercase;
+            outline: none;
+            text-align: center;
+            transition: border-color 0.3s ease, color 0.3s ease;
+        }
+
+        .search-input::placeholder {
+            color: var(--color-text);
+            opacity: 0.5;
+            font-family: monospace;
+        }
 
         .portfolio-grid {
             width: 95%; 
@@ -720,8 +755,8 @@
             gap: 20px;
             width: 440px; 
             margin-bottom: 180px; 
-            margin-top: auto; 
-            padding-top: 20px;
+            margin-top: 25px; 
+            padding-top: 0px;
         }
 
         .page-btn {
@@ -912,13 +947,13 @@
         @media (max-width: 768px) {
             .portfolio-grid { grid-template-columns: 1fr; gap: 25px; }
             .btn-back-arrow { left: 20px; }
-            .pagination-container { width: 90%; gap: 10px; margin-top: 40px; }
-            .titolo-sezione { font-size: 2.6rem; margin-top: 100px; margin-bottom: 40px; }
+            .pagination-container { width: 90%; gap: 10px; margin-top: 25px; }
+            .titolo-sezione { font-size: 2.6rem; margin-top: 100px; margin-bottom: 20px; }
             .vinyl-cursor { display: none !important; }
-            body, a, button, .page-btn, .btn-back-arrow, .play-track-btn, .pitch-slider-input, .player-social-link, .random-shuffle-btn, .loop-btn { cursor: pointer !important; }
+            body, a, button, .page-btn, .btn-back-arrow, .play-track-btn, .pitch-slider-input, .player-social-link, .random-shuffle-btn, .loop-btn, .search-input { cursor: pointer !important; }
             .traccia { height: auto; min-height: 180px; }
             .traccia-titolo { min-height: auto; max-height: none; }
-            .interactive-row { flex-direction: row; align-items: center; width: 90%; }
+            .interactive-row { flex-direction: row; align-items: center; width: 90%; margin-top: 40px; }
             .daily-beat-container { padding: 8px 15px; }
             .daily-beat-title { max-width: 140px; }
         }
@@ -951,7 +986,21 @@
     <main style="width: 100%; display: flex; flex-direction: column; align-items: center; z-index: 2; flex: 1;">
         <h2 class="titolo-sezione">selected beats</h2>
 
+        <!-- NUOVA BARRA DI RICERCA INTEGRATA -->
+        <div class="search-container">
+            <input type="text" id="beatSearchInput" class="search-input" placeholder="cerca" oninput="filtraETriggaGlitch()">
+        </div>
+
         <div class="portfolio-grid" id="portfolio-grid"></div>
+
+        <!-- POSIZIONI SWITCHATE: ORA LA PAGINAZIONE È SOPRA IL DAILY BEAT -->
+        <div class="pagination-container">
+            <button class="page-btn" id="start-btn" onclick="goToFirstPage()">start</button>
+            <button class="page-btn" id="prev-btn" onclick="changePage(-1)">prev</button>
+            <span class="page-info" id="page-info">1</span>
+            <button class="page-btn" id="next-btn" onclick="changePage(1)">next</button>
+            <button class="page-btn" id="end-btn" onclick="goToLastPage()">end</button>
+        </div>
 
         <div class="interactive-row">
             <button class="random-shuffle-btn" id="randomBeatBtn" onclick="riproduciBeatCasuale()" title="riproduci beat casuale">
@@ -976,14 +1025,6 @@
                     <path d="M7 7h10v3l4-4-4-4v3H5v6h2V7zm10 10H7v-3l-4 4 4 4v-3h12v-6h-2v4z"/>
                 </svg>
             </button>
-        </div>
-
-        <div class="pagination-container">
-            <button class="page-btn" id="start-btn" onclick="goToFirstPage()">start</button>
-            <button class="page-btn" id="prev-btn" onclick="changePage(-1)">prev</button>
-            <span class="page-info" id="page-info">1</span>
-            <button class="page-btn" id="next-btn" onclick="changePage(1)">next</button>
-            <button class="page-btn" id="end-btn" onclick="goToLastPage()">end</button>
         </div>
     </main>
 
@@ -1042,7 +1083,7 @@
             { nome: "bully", url: "https://pub-4b347fb9f02f48879ae42ce3d3bd33d5.r2.dev/bully.mp3" },
             { nome: "butterfly guitar", url: "https://pub-4b347fb9f02f48879ae42ce3d3bd33d5.r2.dev/butterfly%20guitar.mp3" },
             { nome: "cave laboratory", url: "https://pub-4b347fb9f02f48879ae42ce3d3bd33d5.r2.dev/cave%20laboratory.mp3" },
-            { nome: "città del soleil", url: "https://pub-4b347fb9f02f48879ae42ce3d3bd33d5.r2.dev/citt%C3%A0%20del%20sole.mp3" },
+            { nome: "città del sole", url: "https://pub-4b347fb9f02f48879ae42ce3d3bd33d5.r2.dev/citt%C3%A0%20del%20sole.mp3" },
             { nome: "code red", url: "https://pub-4b347fb9f02f48879ae42ce3d3bd33d5.r2.dev/code%20red.mp3" },
             { nome: "dark jungle", url: "https://pub-4b347fb9f02f48879ae42ce3d3bd33d5.r2.dev/dark%20jungle.mp3" },
             { nome: "don't act shy", url: "https://pub-4b347fb9f02f48879ae42ce3d3bd33d5.r2.dev/don't%20act%20shy.mp3" },
@@ -1091,6 +1132,9 @@
             { nome: "zara vogue type shi", url: "https://pub-4b347fb9f02f48879ae42ce3d3bd33d5.r2.dev/zara%20vogue%20type%20shi.mp3" }
         ];
 
+        // Manteniamo una copia filtrabile separata per non alterare la lista originale
+        let tracceFiltrate = [...listaTracce];
+
         const traccePerPagina = 6; 
         let paginaCorrente = 1;
         let isLoopActive = false;
@@ -1107,6 +1151,7 @@
         
         const pitchSlider = document.getElementById('pitchSlider');
         const pitchValue = document.getElementById('pitchValue');
+        const searchInput = document.getElementById('beatSearchInput');
 
         window.addEventListener('mousemove', (e) => {
             vinyl.style.left = e.clientX + 'px';
@@ -1129,6 +1174,8 @@
 
         pitchSlider.addEventListener('mouseenter', () => vinyl.classList.add('on-progress'));
         pitchSlider.addEventListener('mouseleave', () => vinyl.classList.remove('on-progress'));
+        searchInput.addEventListener('mouseenter', () => vinyl.classList.add('on-progress'));
+        searchInput.addEventListener('mouseleave', () => vinyl.classList.remove('on-progress'));
 
         document.querySelectorAll('.player-social-link').forEach(el => {
             el.addEventListener('mouseenter', () => vinyl.classList.add('on-progress'));
@@ -1188,9 +1235,9 @@
         }
 
         function riproduciBeatCasuale() {
-            if (listaTracce.length === 0) return;
-            const indiceCasuale = Math.floor(Math.random() * listaTracce.length);
-            const beatCasuale = listaTracce[indiceCasuale];
+            if (tracceFiltrate.length === 0) return;
+            const indiceCasuale = Math.floor(Math.random() * tracceFiltrate.length);
+            const beatCasuale = tracceFiltrate[indiceCasuale];
             suonaTraccia(beatCasuale.nome, beatCasuale.url);
         }
 
@@ -1248,12 +1295,32 @@
             }, 150);
         }
 
+        // NUOVA FUNZIONE: FILTRA LE TRACCE IN BASE ALL'INPUT ED ESEGUE GLITCH
+        function filtraETriggaGlitch() {
+            const query = searchInput.value.toLowerCase().trim();
+            tracceFiltrate = listaTracce.filter(traccia => traccia.nome.toLowerCase().includes(query));
+            paginaCorrente = 1;
+            triggerPageGlitchEffect(() => {
+                renderGrid();
+            });
+        }
+
         function renderGrid() {
             gridContainer.innerHTML = "";
 
+            if (tracceFiltrate.length === 0) {
+                gridContainer.innerHTML = '<div style="grid-column: 1/-1; opacity: 0.5; padding: 40px; font-family: monospace;">nessun beat trovato.</div>';
+                document.getElementById('page-info').textContent = "-";
+                document.getElementById('start-btn').disabled = true;
+                document.getElementById('prev-btn').disabled = true;
+                document.getElementById('next-btn').disabled = true;
+                document.getElementById('end-btn').disabled = true;
+                return;
+            }
+
             const inizio = (paginaCorrente - 1) * traccePerPagina;
             const fine = inizio + traccePerPagina;
-            const traccePagina = listaTracce.slice(inizio, fine);
+            const traccePagina = tracceFiltrate.slice(inizio, fine);
 
             traccePagina.forEach(traccia => {
                 const nomeFile = traccia.nome || "beat senza nome";
@@ -1277,7 +1344,7 @@
             });
 
             document.getElementById('page-info').textContent = paginaCorrente;
-            const totalePagine = Math.max(1, Math.ceil(listaTracce.length / traccePerPagina));
+            const totalePagine = Math.max(1, Math.ceil(tracceFiltrate.length / traccePerPagina));
 
             document.getElementById('start-btn').disabled = paginaCorrente === 1;
             document.getElementById('prev-btn').disabled = paginaCorrente === 1;
@@ -1291,7 +1358,7 @@
         }
 
         function changePage(direzione) {
-            const totalePagine = Math.ceil(listaTracce.length / traccePerPagina);
+            const totalePagine = Math.ceil(tracceFiltrate.length / traccePerPagina);
             const nuovaPagina = paginaCorrente + direzione;
             if (nuovaPagina >= 1 && nuovaPagina <= totalePagine) {
                 triggerPageGlitchEffect(() => {
@@ -1313,7 +1380,7 @@
         }
 
         function goToLastPage() {
-            const totalePagine = Math.max(1, Math.ceil(listaTracce.length / traccePerPagina));
+            const totalePagine = Math.max(1, Math.ceil(tracceFiltrate.length / traccePerPagina));
             if (paginaCorrente !== totalePagine) {
                 triggerPageGlitchEffect(() => {
                     paginaCorrente = totalePagine;
