@@ -387,6 +387,7 @@
             color: var(--bg-flat-solid) !important;
         }
 
+        /* MODIFICATO: ALZATO GRAZIE AL POSIZIONAMENTO RELATIVO (OPZIONE 2 OTTIMIZZATA) */
         .interactive-row {
             display: flex;
             align-items: center;
@@ -396,6 +397,9 @@
             margin-bottom: 25px;
             width: 95%;
             max-width: 600px;
+            position: relative;
+            top: -65px; /* Sfrutta lo spazio vuoto alzandosi ed evitando sovrapposizioni */
+            z-index: 10; /* Rimane sopra al player in ogni circostanza */
         }
 
         .random-shuffle-btn, .loop-btn {
@@ -748,13 +752,14 @@
             background: transparent;
         }
 
+        /* MODIFICATO: RIDOTTO IL MARGINE INFERIORE VISTO LO SPOSTAMENTO DEL DAILY BEAT */
         .pagination-container {
             display: grid;
             grid-template-columns: repeat(5, 1fr);
             align-items: center;
             gap: 20px;
             width: 440px; 
-            margin-bottom: 180px; 
+            margin-bottom: 95px; 
             margin-top: 25px; 
             padding-top: 0px;
         }
@@ -896,8 +901,9 @@
                 align-items: center;
                 order: 2; 
             }
+            /* MODIFICATO: CALIBRATA LA DISTANZA DEL MARGINE INFERIORE ANCHE SU MOBILE */
             .pagination-container {
-                margin-bottom: 250px;
+                margin-bottom: 165px;
             }
         }
 
@@ -953,7 +959,8 @@
             body, a, button, .page-btn, .btn-back-arrow, .play-track-btn, .pitch-slider-input, .player-social-link, .random-shuffle-btn, .loop-btn, .search-input { cursor: pointer !important; }
             .traccia { height: auto; min-height: 180px; }
             .traccia-titolo { min-height: auto; max-height: none; }
-            .interactive-row { flex-direction: row; align-items: center; width: 90%; margin-top: 40px; }
+            /* MODIFICATO: MANTENUTO IL POSIZIONAMENTO CORRETTO E SICURO ANCHE SU DISPOSITIVI MOBILE IN VERTICALE */
+            .interactive-row { flex-direction: row; align-items: center; width: 90%; margin-top: 0px; top: -65px; }
             .daily-beat-container { padding: 8px 15px; }
             .daily-beat-title { max-width: 140px; }
         }
