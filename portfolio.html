@@ -871,21 +871,30 @@
         @media (max-width: 900px) {
             .bottom-audio-player {
                 grid-template-columns: 1fr;
-                gap: 15px;
-                padding: 20px 25px;
+                gap: 10px;
+                padding: 12px 20px;
             }
             .player-left-socials {
                 justify-content: center;
                 order: 3; 
+                gap: 16px;
+            }
+            .player-social-icon {
+                width: 22px;
+                height: 22px;
             }
             .player-center-core {
                 order: 1;
                 width: 100%;
                 min-width: 0; 
+                gap: 4px;
             }
             .player-info-meta {
                 width: 100%;
                 min-width: 0;
+            }
+            .player-info-meta .current-track-title {
+                font-size: 1.25rem;
             }
             .player-controls-wrapper {
                 width: 100%;
@@ -893,10 +902,15 @@
             .player-controls-wrapper audio {
                 width: 100%;
                 max-width: 100%;
+                height: 30px;
             }
             .pitch-container {
                 align-items: center;
                 order: 2; 
+                font-size: 0.75rem;
+            }
+            .pitch-slider-input {
+                width: 80px;
             }
             .pagination-container {
                 margin-bottom: 25px;
@@ -949,25 +963,54 @@
         @media (max-width: 768px) {
             .portfolio-grid { grid-template-columns: 1fr; gap: 25px; }
             .btn-back-arrow { left: 20px; }
-            .pagination-container { width: 90%; gap: 10px; margin-top: 25px; margin-bottom: 25px; }
+            .pagination-container { width: 90%; gap: 10px; margin-top: 25px; margin-bottom: 20px; }
             .titolo-sezione { font-size: 2.6rem; margin-top: 100px; margin-bottom: 20px; }
             .vinyl-cursor { display: none !important; }
             body, a, button, .page-btn, .btn-back-arrow, .play-track-btn, .pitch-slider-input, .player-social-link, .random-shuffle-btn, .loop-btn, .search-input { cursor: pointer !important; }
             .traccia { height: auto; min-height: 180px; }
             .traccia-titolo { min-height: auto; max-height: none; }
             
-            /* FIX MOBILE: Rimozione top negativo e distanziamento dal lettore in basso */
+            /* FIX DEFINITIVO SOVRAPPOSIZIONE MOBILE */
             .interactive-row { 
                 position: static; 
                 top: auto; 
-                flex-direction: row; 
+                flex-direction: row;
+                flex-wrap: wrap;
                 align-items: center; 
-                width: 90%; 
+                justify-content: center;
+                width: 92%; 
+                gap: 8px;
                 margin-top: 15px; 
-                margin-bottom: 200px; 
+                margin-bottom: 220px; 
             }
-            .daily-beat-container { padding: 8px 15px; }
-            .daily-beat-title { max-width: 140px; }
+            .random-shuffle-btn, .loop-btn {
+                width: 38px;
+                height: 38px;
+                min-width: 38px;
+            }
+            .random-shuffle-btn svg, .loop-btn svg {
+                width: 16px;
+                height: 16px;
+            }
+            .daily-beat-container { 
+                padding: 6px 10px;
+                gap: 8px;
+                min-width: 0;
+            }
+            .daily-beat-title { 
+                max-width: 120px; 
+                font-size: 1rem;
+            }
+            .daily-beat-container .play-track-btn {
+                padding: 3px 8px;
+                font-size: 0.75rem;
+            }
+            .daily-beat-label {
+                font-size: 0.65rem;
+            }
+            .exclusive-badge {
+                font-size: 0.55rem;
+            }
         }
     </style>
 </head>
