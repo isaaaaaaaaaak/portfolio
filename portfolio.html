@@ -255,7 +255,6 @@
 
         .titolo-sezione:hover { opacity: 1; }
 
-        /* NUOVO ELEMENTO: BARRA DI RICERCA INTERNA ED ESTETICA */
         .search-container {
             width: 95%;
             max-width: 400px;
@@ -387,7 +386,6 @@
             color: var(--bg-flat-solid) !important;
         }
 
-        /* MODIFICATO: ALZATO GRAZIE AL POSIZIONAMENTO RELATIVO (OPZIONE 2 OTTIMIZZATA) */
         .interactive-row {
             display: flex;
             align-items: center;
@@ -398,8 +396,8 @@
             width: 95%;
             max-width: 600px;
             position: relative;
-            top: -65px; /* Sfrutta lo spazio vuoto alzandosi ed evitando sovrapposizioni */
-            z-index: 10; /* Rimane sopra al player in ogni circostanza */
+            top: -65px;
+            z-index: 10;
         }
 
         .random-shuffle-btn, .loop-btn {
@@ -752,7 +750,6 @@
             background: transparent;
         }
 
-        /* MODIFICATO: RIDOTTO IL MARGINE INFERIORE VISTO LO SPOSTAMENTO DEL DAILY BEAT */
         .pagination-container {
             display: grid;
             grid-template-columns: repeat(5, 1fr);
@@ -901,9 +898,8 @@
                 align-items: center;
                 order: 2; 
             }
-            /* MODIFICATO: CALIBRATA LA DISTANZA DEL MARGINE INFERIORE ANCHE SU MOBILE */
             .pagination-container {
-                margin-bottom: 165px;
+                margin-bottom: 25px;
             }
         }
 
@@ -946,21 +942,30 @@
                 display: none !important; 
             }
             .pagination-container {
-                margin-bottom: 100px !important;
+                margin-bottom: 25px !important;
             }
         }
 
         @media (max-width: 768px) {
             .portfolio-grid { grid-template-columns: 1fr; gap: 25px; }
             .btn-back-arrow { left: 20px; }
-            .pagination-container { width: 90%; gap: 10px; margin-top: 25px; }
+            .pagination-container { width: 90%; gap: 10px; margin-top: 25px; margin-bottom: 25px; }
             .titolo-sezione { font-size: 2.6rem; margin-top: 100px; margin-bottom: 20px; }
             .vinyl-cursor { display: none !important; }
             body, a, button, .page-btn, .btn-back-arrow, .play-track-btn, .pitch-slider-input, .player-social-link, .random-shuffle-btn, .loop-btn, .search-input { cursor: pointer !important; }
             .traccia { height: auto; min-height: 180px; }
             .traccia-titolo { min-height: auto; max-height: none; }
-            /* MODIFICATO: MANTENUTO IL POSIZIONAMENTO CORRETTO E SICURO ANCHE SU DISPOSITIVI MOBILE IN VERTICALE */
-            .interactive-row { flex-direction: row; align-items: center; width: 90%; margin-top: 0px; top: -65px; }
+            
+            /* FIX MOBILE: Rimozione top negativo e distanziamento dal lettore in basso */
+            .interactive-row { 
+                position: static; 
+                top: auto; 
+                flex-direction: row; 
+                align-items: center; 
+                width: 90%; 
+                margin-top: 15px; 
+                margin-bottom: 200px; 
+            }
             .daily-beat-container { padding: 8px 15px; }
             .daily-beat-title { max-width: 140px; }
         }
@@ -993,14 +998,12 @@
     <main style="width: 100%; display: flex; flex-direction: column; align-items: center; z-index: 2; flex: 1;">
         <h2 class="titolo-sezione">selected beats</h2>
 
-        <!-- NUOVA BARRA DI RICERCA INTEGRATA -->
         <div class="search-container">
             <input type="text" id="beatSearchInput" class="search-input" placeholder="cerca" oninput="filtraETriggaGlitch()">
         </div>
 
         <div class="portfolio-grid" id="portfolio-grid"></div>
 
-        <!-- POSIZIONI SWITCHATE: ORA LA PAGINAZIONE È SOPRA IL DAILY BEAT -->
         <div class="pagination-container">
             <button class="page-btn" id="start-btn" onclick="goToFirstPage()">start</button>
             <button class="page-btn" id="prev-btn" onclick="changePage(-1)">prev</button>
@@ -1075,7 +1078,6 @@
     </div>
 
     <script>
-        // LISTA INTEGRALE COMPLETA DI 60 TRACCE AGGIORNATA
         let listaTracce = [
             { nome: "& u think i'm crazy", url: "https://pub-4b347fb9f02f48879ae42ce3d3bd33d5.r2.dev/%26%20u%20think%20im%20crazy.mp3" },
             { nome: "aether nether", url: "https://pub-4b347fb9f02f48879ae42ce3d3bd33d5.r2.dev/aether%20nether.mp3" },
@@ -1139,7 +1141,6 @@
             { nome: "zara vogue type shi", url: "https://pub-4b347fb9f02f48879ae42ce3d3bd33d5.r2.dev/zara%20vogue%20type%20shi.mp3" }
         ];
 
-        // Manteniamo una copia filtrabile separata per non alterare la lista originale
         let tracceFiltrate = [...listaTracce];
 
         const traccePerPagina = 6; 
@@ -1302,7 +1303,6 @@
             }, 150);
         }
 
-        // NUOVA FUNZIONE: FILTRA LE TRACCE IN BASE ALL'INPUT ED ESEGUE GLITCH
         function filtraETriggaGlitch() {
             const query = searchInput.value.toLowerCase().trim();
             tracceFiltrate = listaTracce.filter(traccia => traccia.nome.toLowerCase().includes(query));
@@ -1399,7 +1399,6 @@
 
         function updateLabel(isDark) {
             themeLabel.textContent = isDark ? 'dark' : 'light';
-            // Gestione della classe sull'html element per evitare flash bianchi
             if(isDark) {
                 document.documentElement.classList.add('dark-theme-active');
             } else {
