@@ -428,7 +428,7 @@
             pointer-events: none;
         }
 
-        /* STRUTTURA RESPONSIVE SMARTPHONE/TABLET FIXATA */
+        /* STRUTTURA RESPONSIVE SMARTPHONE/TABLET */
         @media (max-width: 768px) {
             html, body {
                 overflow-x: hidden;
@@ -438,18 +438,6 @@
             body {
                 overflow-y: auto;
                 position: relative;
-                justify-content: flex-start;
-                padding-top: 60px;
-                padding-bottom: 20px;
-                box-sizing: border-box;
-                min-height: 100vh;
-            }
-            .theme-progress-container {
-                position: relative;
-                top: 0;
-                left: 0;
-                transform: none;
-                margin-bottom: 20px;
             }
             .titolo-container { 
                 padding: 20px 15px; 
@@ -457,7 +445,6 @@
                 max-width: 100%;
                 width: 100%;
                 box-sizing: border-box;
-                margin-bottom: 20px;
             }
             .titolo-principale-link { 
                 font-size: 3.5rem; 
@@ -477,10 +464,8 @@
                 width: 100%;
                 height: 100%;
                 overflow: hidden;
-                position: fixed;
                 top: 0;
                 left: 0;
-                z-index: 1;
             }
             .logo-personalizzato-bg { 
                 width: 100vw; 
@@ -493,20 +478,8 @@
                 left: 50%;
                 transform: translate(-50%, -50%);
             }
-            .social-footer { 
-                position: relative; 
-                bottom: auto; 
-                gap: 25px; 
-                margin-top: 30px;
-                margin-bottom: 20px;
-            }
-            .site-bar { 
-                position: relative; 
-                bottom: auto; 
-                padding: 10px; 
-                font-size: 0.65rem; 
-                margin-top: auto;
-            }
+            .social-footer { bottom: 105px; gap: 25px; }
+            .site-bar { padding: 10px; font-size: 0.65rem; position: absolute; }
             .licenza-text { font-size: 0.6rem; max-width: 95%; }
             .vinyl-cursor { display: none !important; }
             body, a, button, .titolo-principale-link, .social-link { cursor: pointer !important; }
@@ -519,28 +492,21 @@
                 width: 100%;
             }
             body {
-                justify-content: flex-start;
+                justify-content: center;
                 min-height: 100vh;
-                padding-top: 30px;
+                padding-top: 40px;
                 box-sizing: border-box;
             }
             .theme-progress-container {
-                position: relative;
-                top: 0;
-                left: 0;
-                transform: none;
-                margin-bottom: 10px;
+                top: 10px;
             }
             .titolo-container {
                 padding: 10px 10px;
-                margin-top: 10px;
+                margin-top: 15px;
             }
             .titolo-principale-link {
                 font-size: 2.8rem;
                 -webkit-box-reflect: none; 
-            }
-            .logo-sfondo-container {
-                position: fixed;
             }
             .logo-personalizzato-bg {
                 width: 100vw;
@@ -554,7 +520,7 @@
                 position: relative;
                 bottom: auto;
                 margin-top: 25px;
-                margin-bottom: 20px; 
+                margin-bottom: 30px; 
             }
             .site-bar {
                 position: relative;
